@@ -1,0 +1,2646 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>NumGuess v9</title>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js" crossorigin="anonymous"></script>
+
+  <style>
+    /* ============ TEMA DEĞİŞKENLERİ ============ */
+    :root {
+      --accent: #00d2ff;
+      --accent2: #00aacc;
+      --accent-glow: #00d2ff44;
+      --accent-bg: #001a25;
+      --accent-border: #00d2ff33;
+      --p1-color: #44dd66;
+      --p1-bg: #081a08;
+      --p1-border: #1a4a1a;
+      --p2-color: #4466dd;
+      --p2-bg: #08081a;
+      --p2-border: #1a1a4a;
+      --ai-color: #cc44ff;
+      --ai-bg: #1a0a1a;
+      --ai-border: #4a1a4a;
+      --coin-color: #ffc700;
+      --coin-bg: #1a1200;
+      --coin-border: #5a3d00;
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #0d0d15;
+      --bg-card: #0f0f1a;
+      --bg-input: #080810;
+      --border-main: #1a1a2e;
+      --border-card: #1e1e35;
+      --text-primary: #ffffff;
+      --text-secondary: #aaaaaa;
+      --text-muted: #444444;
+      --text-dim: #252535;
+      --btn-ok-bg: #0a2a0a;
+      --btn-ok-color: #44ee66;
+      --btn-ok-border: #1a5a1a;
+      --win-color: #44ee66;
+      --footer-brand: #00d2ff;
+      --market-color: #ff9944;
+      --multi-color: #cc44ff;
+      --stat-color: #00d2ff;
+    }
+
+    /* ============ TEMA: MOR ============ */
+    body.theme-purple {
+      --accent: #cc44ff;
+      --accent2: #aa22dd;
+      --accent-glow: #cc44ff44;
+      --accent-bg: #1a0a1a;
+      --accent-border: #cc44ff33;
+      --footer-brand: #cc44ff;
+      --btn-ok-bg: #1a0a2a;
+      --btn-ok-color: #cc44ff;
+      --btn-ok-border: #5a1a7a;
+      --win-color: #cc44ff;
+      --p1-color: #dd66ff;
+      --p1-bg: #150a20;
+      --p1-border: #4a1a6a;
+      --p2-color: #aa44ff;
+      --p2-bg: #100a1a;
+      --p2-border: #3a1a5a;
+      --ai-color: #ff44cc;
+      --ai-bg: #1a0a15;
+      --ai-border: #5a1a4a;
+      --bg-primary: #0a080f;
+      --bg-secondary: #0d0a15;
+      --bg-card: #0f0a1a;
+      --bg-input: #080810;
+      --border-main: #2a1a3e;
+      --border-card: #2e1e45;
+      --multi-color: #cc44ff;
+      --stat-color: #cc44ff;
+      --market-color: #ff66cc;
+    }
+
+    /* ============ TEMA: YEŞİL ============ */
+    body.theme-green {
+      --accent: #44ff88;
+      --accent2: #22dd66;
+      --accent-glow: #44ff8844;
+      --accent-bg: #021a0a;
+      --accent-border: #44ff8833;
+      --footer-brand: #44ff88;
+      --btn-ok-bg: #021a08;
+      --btn-ok-color: #44ff88;
+      --btn-ok-border: #1a6a3a;
+      --win-color: #44ff88;
+      --p1-color: #44ff88;
+      --p1-bg: #021a08;
+      --p1-border: #1a6a3a;
+      --p2-color: #22ddaa;
+      --p2-bg: #021a12;
+      --p2-border: #1a5a3a;
+      --ai-color: #88ff44;
+      --ai-bg: #0a1a02;
+      --ai-border: #3a5a1a;
+      --bg-primary: #080f0a;
+      --bg-secondary: #0a150d;
+      --bg-card: #0a1a0d;
+      --bg-input: #080f08;
+      --border-main: #1a2e1e;
+      --border-card: #1e3522;
+      --multi-color: #44ff88;
+      --stat-color: #44ff88;
+      --market-color: #aaff44;
+      --coin-color: #ffdd00;
+    }
+
+    /* ============ TEMA: KIRMIZI ============ */
+    body.theme-red {
+      --accent: #ff4444;
+      --accent2: #dd2222;
+      --accent-glow: #ff444444;
+      --accent-bg: #1a0202;
+      --accent-border: #ff444433;
+      --footer-brand: #ff4444;
+      --btn-ok-bg: #2a0808;
+      --btn-ok-color: #ff6666;
+      --btn-ok-border: #6a1a1a;
+      --win-color: #ff4444;
+      --p1-color: #ff6666;
+      --p1-bg: #1a0808;
+      --p1-border: #5a1a1a;
+      --p2-color: #ff8844;
+      --p2-bg: #1a0a08;
+      --p2-border: #5a2a1a;
+      --ai-color: #ff44aa;
+      --ai-bg: #1a0810;
+      --ai-border: #5a1a3a;
+      --bg-primary: #0f0808;
+      --bg-secondary: #150a0a;
+      --bg-card: #1a0a0a;
+      --bg-input: #100808;
+      --border-main: #2e1a1a;
+      --border-card: #351e1e;
+      --multi-color: #ff6644;
+      --stat-color: #ff4444;
+      --market-color: #ff8844;
+    }
+
+    /* ============ TEMA: ALTIN ============ */
+    body.theme-gold {
+      --accent: #ffc700;
+      --accent2: #ddaa00;
+      --accent-glow: #ffc70044;
+      --accent-bg: #1a1200;
+      --accent-border: #ffc70033;
+      --footer-brand: #ffc700;
+      --btn-ok-bg: #2a1a00;
+      --btn-ok-color: #ffc700;
+      --btn-ok-border: #7a5a00;
+      --win-color: #ffc700;
+      --p1-color: #ffd744;
+      --p1-bg: #1a1200;
+      --p1-border: #5a4000;
+      --p2-color: #ffaa22;
+      --p2-bg: #1a0e00;
+      --p2-border: #5a3800;
+      --ai-color: #ff8800;
+      --ai-bg: #1a0e00;
+      --ai-border: #5a3000;
+      --bg-primary: #0f0e08;
+      --bg-secondary: #15120a;
+      --bg-card: #1a150a;
+      --bg-input: #100e08;
+      --border-main: #2e281a;
+      --border-card: #35301e;
+      --multi-color: #ffc700;
+      --stat-color: #ffc700;
+      --market-color: #ff8844;
+      --coin-color: #ffc700;
+      --coin-bg: #1a1200;
+      --coin-border: #6a5000;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;}
+    button{touch-action:manipulation;cursor:pointer;-webkit-appearance:none;}
+    html{height:100%;width:100%;overflow:hidden;-webkit-text-size-adjust:100%;}
+    body{
+      background:var(--bg-primary);
+      height:100%;
+      width:100%;
+      overflow:hidden;
+      font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+      color:var(--text-primary);
+      touch-action:manipulation;
+      transition:background 0.4s ease;
+    }
+    #app{display:flex;flex-direction:column;height:100%;width:100%;overflow:hidden;position:relative;}
+    .screen{display:none;flex:1;flex-direction:column;opacity:0;-webkit-transform:translateY(14px);transform:translateY(14px);-webkit-transition:opacity 0.25s ease,-webkit-transform 0.25s ease;transition:opacity 0.25s ease,transform 0.25s ease;overflow:hidden;min-height:0;}
+    .screen.active{display:flex;}
+    .screen.visible{opacity:1;-webkit-transform:translateY(0);transform:translateY(0);}
+    body.perf-low *{transition:none!important;animation:none!important;}
+    body.perf-low .screen{transition:opacity 0.1s ease!important;}
+    body.perf-mid .screen{transition:opacity 0.18s ease,transform 0.18s ease!important;}
+
+    /* ============ TOPBAR ============ */
+    .topbar{
+      height:68px;
+      background:var(--bg-secondary);
+      border-bottom:1px solid var(--border-main);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 18px;flex-shrink:0;gap:12px;
+      position:sticky;top:0;z-index:100;
+    }
+    .fps-badge{font-family:'Menlo','Consolas',monospace;font-size:13px;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:6px 12px;border-radius:18px;display:none;}
+    .topbar-right{display:flex;align-items:center;gap:10px;}
+    .topbar-coins{
+      font-size:18px;color:var(--coin-color);background:var(--coin-bg);
+      border:2px solid var(--coin-border);padding:10px 20px;border-radius:20px;
+      font-weight:bold;display:none;align-items:center;gap:7px;
+      cursor:pointer;min-width:100px;
+    }
+    .topbar-coins .tc-icon{font-size:22px;}
+    .fullscreen-btn{
+      background:#111120;border:2px solid #2a2a45;color:var(--accent);
+      font-size:26px;width:56px;height:56px;border-radius:14px;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      transition:all 0.15s;
+    }
+    .fullscreen-btn:active{transform:scale(0.93);}
+    .topbar-credit{font-size:11px;color:var(--text-dim);}
+
+    /* ============ CENTER / LAYOUTS ============ */
+    .center{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:16px;padding:24px 16px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;}
+    .game-title{font-size:58px;font-weight:900;color:var(--accent);letter-spacing:3px;animation:pulse-title 3s infinite;}
+    @keyframes pulse-title{0%,100%{text-shadow:0 0 8px var(--accent-glow);}50%{text-shadow:0 0 28px var(--accent-glow),0 0 60px var(--accent-glow);}}
+    .game-sub{font-size:14px;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;}
+
+    .coins-badge{display:flex;align-items:center;gap:10px;background:var(--coin-bg);border:1px solid var(--coin-border);border-radius:20px;padding:10px 22px;font-size:19px;font-weight:bold;color:var(--coin-color);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 0 14px #ffc70018;}
+    .coins-badge:active{transform:scale(0.97);}
+    .coins-badge .coin-icon{font-size:24px;}
+    .coins-badge .coin-label{font-size:11px;color:#886600;letter-spacing:2px;text-transform:uppercase;}
+
+    .menu-btn{width:260px;padding:15px;font-size:18px;font-weight:bold;border:none;border-radius:12px;cursor:pointer;transition:all 0.15s;letter-spacing:1px;-webkit-appearance:none;}
+    .menu-btn:active{transform:scale(0.97);}
+    .btn-oyna{background:var(--p1-bg);color:var(--p1-color);border:1px solid var(--p1-border);}
+    .btn-ayarlar{background:#0d0d3a;color:var(--accent);border:1px solid var(--accent-border);position:relative;}
+    .btn-multi{background:var(--ai-bg);color:var(--multi-color);border:1px solid var(--ai-border);width:260px;padding:15px;font-size:18px;font-weight:bold;border-radius:12px;cursor:pointer;transition:all 0.15s;letter-spacing:1px;}
+    .btn-multi:active{transform:scale(0.97);}
+    .btn-market{background:#1a0a00;color:var(--market-color);border:1px solid #5a2a00;width:260px;padding:15px;font-size:18px;font-weight:bold;border-radius:12px;cursor:pointer;transition:all 0.15s;letter-spacing:1px;-webkit-appearance:none;}
+    .btn-stat{background:var(--accent-bg);color:var(--stat-color);border:1px solid var(--accent-border);width:260px;padding:15px;font-size:18px;font-weight:bold;border-radius:12px;cursor:pointer;transition:all 0.15s;letter-spacing:1px;-webkit-appearance:none;}
+    .btn-stat:active{transform:scale(0.97);}
+    .btn-destek{background:#0a1a2a;color:#44aaff;border:1px solid #1a3a5a;width:260px;padding:15px;font-size:18px;font-weight:bold;border-radius:12px;cursor:pointer;transition:all 0.15s;letter-spacing:1px;-webkit-appearance:none;}
+    .btn-destek:active{transform:scale(0.97);}
+    .destek-kart{background:var(--bg-card);border:1px solid var(--border-card);border-radius:18px;padding:22px 20px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:14px;}
+    .destek-baslik{font-size:13px;font-weight:bold;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
+    .destek-satir{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #151525;}
+    .destek-satir:last-child{border-bottom:none;}
+    .destek-icon{font-size:26px;flex-shrink:0;width:36px;text-align:center;}
+    .destek-info{flex:1;}
+    .destek-info-baslik{font-size:15px;font-weight:bold;color:var(--text-primary);}
+    .destek-info-alt{font-size:12px;color:var(--text-muted);margin-top:2px;}
+    .destek-link{background:#1a1a3a;color:var(--accent);border:1px solid var(--accent-border);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.15s;-webkit-appearance:none;}
+    .destek-link:active{transform:scale(0.96);}
+    .destek-saat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+    .destek-saat-item{background:#0d0d1a;border:1px solid #1a1a2e;border-radius:10px;padding:10px 12px;text-align:center;}
+    .destek-saat-gun{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;}
+    .destek-saat-val{font-size:14px;font-weight:bold;color:var(--accent);margin-top:2px;}
+    .btn-geri{background:#1a1010;color:#ff6644;font-size:14px;padding:10px 22px;border-radius:10px;border:1px solid #3a1a1a;cursor:pointer;transition:all 0.15s;-webkit-appearance:none;}
+    .btn-geri:active{transform:scale(0.96);}
+    .market-notif-badge{position:absolute;top:-6px;right:-6px;background:#ff3333;color:white;font-size:10px;font-weight:bold;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;border:2px solid var(--bg-primary);}
+    .market-notif-badge.show{display:flex;}
+
+    /* ============ KARTLAR ============ */
+    .kart{background:var(--bg-card);border:1px solid var(--border-card);border-radius:18px;padding:24px;width:100%;max-width:480px;}
+    .kart-baslik{font-size:12px;font-weight:bold;color:var(--text-muted);margin-bottom:20px;text-align:center;letter-spacing:3px;text-transform:uppercase;}
+    .ayar-satir{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid #151525;font-size:15px;color:var(--text-secondary);}
+    .ayar-satir:last-child{border-bottom:none;}
+    .ayar-satir-acik{font-size:11px;color:var(--text-muted);margin-top:3px;}
+
+    .toggle{width:50px;height:27px;background:#1a1a2a;border-radius:14px;cursor:pointer;position:relative;transition:background 0.25s;border:1px solid #333;flex-shrink:0;}
+    .toggle.on{background:#00883a;border-color:#00aa44;}
+    .toggle::after{content:'';position:absolute;width:21px;height:21px;background:#555;border-radius:50%;top:2px;left:2px;transition:all 0.25s;}
+    .toggle.on::after{left:25px;background:white;}
+    .perf-select{background:#111120;color:var(--text-secondary);border:1px solid #2a2a45;border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer;-webkit-appearance:none;appearance:none;}
+
+    /* ============ MOD / ZORLUK ============ */
+    .mod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:500px;}
+    .mod-kart{background:var(--bg-card);border:1px solid var(--border-card);border-radius:14px;padding:20px 12px;cursor:pointer;text-align:center;transition:all 0.18s;}
+    .mod-kart:hover{border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow);}
+    .mod-kart:active{transform:scale(0.97);}
+    .mod-icon{font-size:30px;margin-bottom:8px;}
+    .mod-ad{font-size:15px;font-weight:bold;color:var(--text-secondary);}
+    .mod-acik{font-size:11px;color:var(--text-muted);margin-top:4px;}
+
+    .zorluk-grid{display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px;}
+    .zorluk-btn{padding:16px;font-size:17px;font-weight:bold;border-radius:14px;cursor:pointer;border:1px solid;transition:all 0.15s;letter-spacing:1px;-webkit-appearance:none;}
+    .zorluk-btn:active{transform:scale(0.97);}
+    .z-kolay{background:#0a2a0a;color:#55ff88;border-color:#1a5a1a;}
+    .z-orta{background:#2a1a00;color:#ffaa33;border-color:#5a3a00;}
+    .z-zor{background:#2a0a0a;color:#ff4444;border-color:#5a1a1a;}
+
+    /* ============ SETUP ============ */
+    .setup-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px;flex:1;justify-content:center;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;}
+    .setup-title{font-size:22px;font-weight:bold;color:var(--text-primary);}
+    .setup-sub{font-size:13px;color:var(--text-muted);text-align:center;}
+    .ekran{background:var(--bg-input);border:2px solid var(--border-main);border-radius:14px;padding:12px 20px;text-align:center;font-family:'Menlo','Consolas',monospace;font-size:52px;letter-spacing:14px;min-height:90px;display:flex;align-items:center;justify-content:center;width:100%;max-width:340px;transition:border-color 0.3s;}
+    .ekran.aktif{border-color:var(--accent);}
+    .numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:380px;}
+    .nkey{background:#111120;color:var(--text-secondary);border:1px solid var(--border-card);border-radius:14px;font-size:28px;font-weight:bold;cursor:pointer;padding:24px 8px;transition:all 0.1s;user-select:none;-webkit-user-select:none;-webkit-appearance:none;touch-action:manipulation;}
+    .nkey:active{transform:scale(0.93);background:#222240;}
+    .nkey-ok{background:var(--btn-ok-bg);color:var(--btn-ok-color);border-color:var(--btn-ok-border);}
+
+    /* ============ OYUN PANELİ ============ */
+    .oyun-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
+    .mesaj-bar{text-align:center;font-size:15px;font-weight:bold;padding:9px 0;min-height:36px;background:var(--bg-secondary);border-bottom:1px solid #151525;flex-shrink:0;transition:color 0.3s;}
+    .panels{display:flex;flex:1;gap:0;overflow:hidden;min-height:0;}
+    .panel{flex:1;display:flex;flex-direction:column;padding:12px 10px;gap:8px;min-width:0;overflow:hidden;}
+    .panel-sep{width:1px;background:#151525;flex-shrink:0;}
+    .panel-header{text-align:center;font-size:13px;font-weight:bold;padding:9px;border-radius:10px;letter-spacing:1px;}
+    .p1-head{background:var(--p1-bg);color:var(--p1-color);border:1px solid var(--p1-border);}
+    .p2-head{background:var(--p2-bg);color:var(--p2-color);border:1px solid var(--p2-border);}
+    .p-ai-head{background:var(--ai-bg);color:var(--ai-color);border:1px solid var(--ai-border);}
+    .mini-ekran{background:var(--bg-input);border:1.5px solid var(--border-main);border-radius:10px;padding:6px;text-align:center;font-family:'Menlo','Consolas',monospace;font-size:30px;letter-spacing:6px;min-height:56px;display:flex;align-items:center;justify-content:center;transition:border-color 0.3s;}
+    .mini-ekran.aktif{border-color:var(--accent);}
+    .mini-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+    .mkey{background:#0d0d1a;color:var(--text-secondary);border:1px solid #181828;border-radius:12px;font-size:24px;font-weight:bold;cursor:pointer;padding:20px 4px;transition:all 0.1s;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-appearance:none;}
+    .mkey:active{transform:scale(0.92);}
+    .mkey.off{opacity:0.2;pointer-events:none;}
+    .mkey-ok{background:var(--btn-ok-bg);color:var(--btn-ok-color);border-color:var(--btn-ok-border);font-size:14px;}
+    .deneme-info{text-align:center;font-size:11px;color:var(--text-dim);padding:2px 0;}
+    .gecmis{background:var(--bg-input);border-radius:8px;padding:8px 10px;font-family:'Menlo','Consolas',monospace;font-size:19px;min-height:90px;max-height:140px;overflow-y:auto;-webkit-overflow-scrolling:touch;line-height:2.2;border:1px solid #111120;}
+    @keyframes fadeSlide{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+    .gecmis-satir{animation:fadeSlide 0.22s ease;}
+    .ai-dusunuyor{text-align:center;padding:10px;color:var(--ai-color);font-size:13px;font-style:italic;animation:blink 1s infinite;}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+    /* ============ TIMER ============ */
+    .timer-bar{display:none;background:#08080f;border-bottom:1px solid #111120;padding:5px 16px;text-align:center;font-family:'Menlo','Consolas',monospace;font-size:20px;font-weight:bold;letter-spacing:4px;color:var(--accent);flex-shrink:0;}
+    .timer-bar.aktif{display:block;}
+    .timer-bar.uyari{color:#ffaa22;animation:timerBlink 0.5s infinite;}
+    .timer-bar.tehlike{color:#ff3333;animation:timerBlink 0.3s infinite;}
+    @keyframes timerBlink{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+    /* ============ İSTATİSTİK ============ */
+    .stat-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 16px;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;}
+    .stat-title{font-size:24px;font-weight:bold;color:var(--stat-color);letter-spacing:2px;}
+    .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:500px;}
+    .stat-kart{background:var(--bg-card);border:1px solid var(--border-card);border-radius:14px;padding:16px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .stat-kart-icon{font-size:26px;}
+    .stat-kart-val{font-size:26px;font-weight:bold;color:var(--accent);}
+    .stat-kart-label{font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;text-align:center;}
+    .stat-section-title{font-size:13px;font-weight:bold;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;width:100%;max-width:500px;text-align:left;padding-left:4px;margin-top:4px;}
+    .stat-row{background:var(--bg-card);border:1px solid var(--border-card);border-radius:12px;padding:14px 18px;width:100%;max-width:500px;display:flex;justify-content:space-between;align-items:center;}
+    .stat-row-label{font-size:14px;color:var(--text-secondary);}
+    .stat-row-val{font-size:15px;font-weight:bold;color:var(--accent);}
+    .stat-bar-wrap{width:100%;max-width:500px;background:var(--bg-card);border:1px solid var(--border-card);border-radius:14px;padding:16px 18px;}
+    .stat-bar-title{font-size:12px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+    .stat-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+    .stat-bar-key{font-size:12px;color:var(--text-secondary);width:60px;flex-shrink:0;}
+    .stat-bar-bg{flex:1;height:8px;background:#111120;border-radius:4px;overflow:hidden;}
+    .stat-bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width 0.6s ease;}
+    .stat-bar-num{font-size:12px;color:var(--text-muted);width:28px;text-align:right;flex-shrink:0;}
+    .stat-sifirla-btn{background:#2a0808;color:#ff6644;border:1px solid #5a1a1a;border-radius:10px;padding:10px 24px;font-size:13px;cursor:pointer;transition:all 0.15s;-webkit-appearance:none;margin-top:4px;}
+    .stat-sifirla-btn:active{transform:scale(0.96);}
+
+    /* ============ MARKET ============ */
+    .market-grid{display:flex;flex-direction:column;gap:12px;width:100%;max-width:500px;}
+    .market-item{background:var(--bg-card);border:1px solid var(--border-card);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;transition:border-color 0.2s;}
+    .market-item:hover{border-color:var(--accent);}
+    .market-item-icon{font-size:32px;flex-shrink:0;}
+    .market-item-info{flex:1;}
+    .market-item-ad{font-size:15px;font-weight:bold;color:var(--text-primary);}
+    .market-item-acik{font-size:11px;color:var(--text-muted);margin-top:3px;}
+    .market-item-tip{font-size:10px;color:var(--ai-color);background:var(--ai-bg);border:1px solid var(--ai-border);border-radius:6px;padding:2px 8px;margin-top:5px;display:inline-block;}
+    .market-btn{background:var(--coin-bg);color:var(--coin-color);border:1px solid var(--coin-border);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:bold;cursor:pointer;transition:all 0.15s;white-space:nowrap;-webkit-appearance:none;}
+    .market-btn:active{transform:scale(0.96);}
+    .market-btn.satin-alindi{background:#0a2a0a;color:#44aa66;border-color:#1a5a1a;cursor:default;}
+    .market-title{font-size:24px;font-weight:bold;color:var(--market-color);letter-spacing:2px;}
+    .market-coins-info{font-size:14px;color:#886600;background:var(--coin-bg);border:1px solid var(--coin-border);border-radius:12px;padding:6px 16px;display:flex;align-items:center;gap:6px;}
+    .market-sub{font-size:11px;color:var(--text-muted);text-align:center;max-width:460px;line-height:1.6;}
+    .market-indirilenler-hint{background:var(--ai-bg);border:1px solid var(--ai-border);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--ai-color);text-align:center;max-width:500px;width:100%;display:none;}
+    .market-indirilenler-hint.show{display:block;}
+
+    /* ============ MULTIPLAYER LOBBY ============ */
+    .multi-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px 16px;flex:1;justify-content:center;overflow-y:auto;overflow-x:hidden;min-height:0;}
+    .multi-title{font-size:22px;font-weight:bold;color:var(--multi-color);letter-spacing:2px;}
+    .multi-subtitle{font-size:13px;color:var(--text-muted);text-align:center;}
+    .multi-card{background:var(--bg-card);border:1px solid #2a1a35;border-radius:16px;padding:24px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px;}
+    .multi-card-title{font-size:13px;font-weight:bold;color:var(--multi-color);letter-spacing:2px;text-transform:uppercase;text-align:center;border-bottom:1px solid var(--border-main);padding-bottom:12px;}
+    .oda-kodu-goster{background:var(--bg-input);border:2px solid var(--multi-color);border-radius:12px;padding:14px;text-align:center;font-family:'Menlo','Consolas',monospace;font-size:30px;letter-spacing:8px;color:var(--multi-color);font-weight:bold;cursor:pointer;transition:all 0.2s;}
+    .oda-input{background:var(--bg-input);border:1.5px solid #2a1a35;border-radius:10px;padding:12px 16px;font-family:'Menlo','Consolas',monospace;font-size:22px;letter-spacing:6px;color:var(--multi-color);width:100%;text-align:center;outline:none;font-weight:bold;-webkit-appearance:none;}
+    .oda-input:focus{border-color:var(--multi-color);}
+    .oda-durum{text-align:center;font-size:13px;padding:8px;border-radius:8px;min-height:36px;}
+    .oda-durum.bekliyor{color:#ffaa22;background:#1a1200;border:1px solid #3a2a00;}
+    .oda-durum.hazir{color:#44ee66;background:#0a1a0a;border:1px solid #1a4a1a;}
+    .oda-durum.hata{color:#ff4444;background:#1a0a0a;border:1px solid #4a1a1a;}
+    .multi-btn{background:var(--ai-bg);color:var(--multi-color);border:1px solid var(--ai-border);border-radius:10px;padding:12px;font-size:15px;font-weight:bold;cursor:pointer;transition:all 0.15s;-webkit-appearance:none;width:100%;}
+    .multi-btn:active{transform:scale(0.97);}
+    .multi-btn.green{background:#0a1a0a;color:#44ee66;border-color:#1a5a1a;}
+    .multi-btn:disabled{opacity:0.5;cursor:not-allowed;}
+    .bekleme-dots{display:flex;gap:8px;margin-top:8px;justify-content:center;}
+    .bekleme-dot{width:10px;height:10px;background:var(--multi-color);border-radius:50%;animation:dotPulse 1.4s infinite;}
+    .bekleme-dot:nth-child(2){animation-delay:0.2s;}
+    .bekleme-dot:nth-child(3){animation-delay:0.4s;}
+    @keyframes dotPulse{0%,80%,100%{transform:scale(0.8);opacity:0.5;}40%{transform:scale(1.2);opacity:1;}}
+
+    /* Oda listesi */
+    .oda-liste-item{background:var(--bg-input);border:1px solid var(--border-card);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .oda-liste-item:hover{border-color:var(--multi-color);}
+    .oda-liste-info{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
+    .oda-liste-kod{font-family:'Menlo','Consolas',monospace;font-size:18px;font-weight:bold;color:var(--multi-color);letter-spacing:4px;}
+    .oda-liste-meta{font-size:11px;color:var(--text-muted);}
+    .oda-liste-sifre{font-size:11px;color:var(--coin-color);background:var(--coin-bg);border:1px solid var(--coin-border);border-radius:6px;padding:2px 8px;}
+    .oda-liste-btn{background:var(--ai-bg);border:1px solid var(--ai-border);color:var(--multi-color);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:bold;white-space:nowrap;flex-shrink:0;}
+    .oda-liste-btn:active{transform:scale(0.96);}
+
+    /* Hazır ekranı için geri sayım */
+    .hazir-countdown{font-size:13px;color:var(--multi-color);text-align:center;padding:4px 0;}
+    .hazir-countdown span{font-size:18px;font-weight:bold;color:var(--accent);}
+
+    /* ============ MULTI OYUN EKRANI ============ */
+    .multi-oyun-container{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
+    .multi-game-area{display:flex;flex:1;overflow:hidden;min-height:0;align-items:stretch;}
+
+    /* ============ CHAT PANELİ — DÜZELTİLDİ ============ */
+    .chat-panel{
+      width:200px;
+      min-width:180px;
+      max-width:200px;
+      background:var(--bg-secondary);
+      border-left:1px solid var(--border-main);
+      display:flex;
+      flex-direction:column;
+      flex-shrink:0;
+      overflow:hidden;
+      /* Yükseklik kesinlikle parent kadar, taşmaz */
+      height:100%;
+      max-height:100%;
+      position:relative;
+    }
+    .chat-header{padding:8px 12px;font-size:12px;font-weight:bold;color:var(--multi-color);letter-spacing:2px;border-bottom:1px solid var(--border-main);text-align:center;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+    .chat-toggle-btn{background:none;border:none;color:var(--multi-color);cursor:pointer;font-size:16px;padding:2px;}
+    .chat-messages{
+      flex:1;
+      overflow-y:scroll;
+      -webkit-overflow-scrolling:touch;
+      padding:8px;
+      display:block;
+      overflow-anchor:none;
+    }
+    .chat-messages .chat-msg{
+      display:block;
+      margin-bottom:6px;
+    }
+    .chat-messages .chat-msg:last-child{
+      margin-bottom:0;
+    }
+    .chat-msg{background:var(--bg-card);border-radius:10px;padding:6px 10px;font-size:12px;max-width:100%;word-break:break-word;flex-shrink:0;}
+    .chat-msg.mine{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--accent);align-self:flex-end;}
+    .chat-msg.theirs{background:var(--ai-bg);border:1px solid var(--ai-border);color:var(--ai-color);align-self:flex-start;}
+    .chat-msg.sys{background:#111120;color:var(--text-muted);font-size:11px;text-align:center;border:none;}
+    .chat-msg img.chat-gif{max-width:100%;border-radius:8px;display:block;}
+    .chat-input-area{border-top:1px solid var(--border-main);padding:8px;flex-shrink:0;position:relative;}
+    .chat-input-row{display:flex;gap:6px;align-items:center;}
+    .chat-input{background:var(--bg-input);border:1px solid var(--border-main);border-radius:8px;color:var(--text-primary);font-size:13px;padding:7px 10px;flex:1;outline:none;-webkit-appearance:none;min-width:0;}
+    .chat-input:focus{border-color:var(--accent);}
+    .chat-send-btn{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--accent);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:16px;flex-shrink:0;}
+    .chat-gif-btn{background:var(--coin-bg);border:1px solid var(--coin-border);color:var(--coin-color);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:14px;flex-shrink:0;}
+    .chat-panel.collapsed{width:36px;min-width:36px;}
+    .chat-panel.collapsed .chat-messages,.chat-panel.collapsed .chat-input-area{display:none;}
+    .chat-panel.collapsed .chat-header{writing-mode:vertical-rl;height:auto;padding:12px 6px;justify-content:center;}
+    .gif-picker{position:absolute;bottom:50px;right:0;width:220px;background:var(--bg-card);border:1px solid var(--border-card);border-radius:14px;z-index:200;overflow:hidden;box-shadow:0 8px 32px #00000088;}
+    .gif-picker-header{padding:10px 12px;border-bottom:1px solid var(--border-main);display:flex;gap:8px;}
+    .gif-search-input{background:var(--bg-input);border:1px solid var(--border-main);border-radius:8px;color:var(--text-primary);font-size:12px;padding:6px 10px;flex:1;outline:none;-webkit-appearance:none;}
+    .gif-search-btn{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--accent);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;}
+    .gif-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px;max-height:200px;overflow-y:auto;}
+    .gif-item{border-radius:8px;overflow:hidden;cursor:pointer;transition:transform 0.15s;border:2px solid transparent;}
+    .gif-item:hover{border-color:var(--accent);transform:scale(1.04);}
+    .gif-item img{width:100%;height:70px;object-fit:cover;display:block;}
+    .gif-cost-info{font-size:10px;color:var(--coin-color);text-align:center;padding:4px;background:var(--coin-bg);}
+
+    /* ============ KAZANDI ============ */
+    .kazandi-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;text-align:center;padding:16px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;}
+    .kaz-title{font-size:44px;font-weight:bold;animation:kazAnim 0.5s ease;color:var(--win-color);}
+    @keyframes kazAnim{from{transform:scale(0.4);opacity:0;}to{transform:scale(1);opacity:1;}}
+    .kaz-sub{font-size:17px;color:var(--text-muted);}
+    .kaz-btns{display:flex;flex-direction:column;gap:10px;align-items:center;margin-top:10px;}
+    .kaz-gecmis-wrap{display:flex;gap:14px;width:100%;max-width:560px;justify-content:center;margin-top:4px;flex-wrap:wrap;}
+    .kaz-gecmis-panel{flex:1;background:#0c0c18;border:1px solid var(--border-card);border-radius:14px;padding:12px;min-width:160px;max-width:240px;}
+    .kaz-gecmis-baslik{font-size:11px;font-weight:bold;letter-spacing:2px;text-align:center;padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid var(--border-main);text-transform:uppercase;}
+    .kaz-gecmis-liste{font-family:'Menlo','Consolas',monospace;font-size:16px;line-height:2;max-height:180px;overflow-y:auto;}
+    /* Gizli sayı kartı */
+    .kaz-sayi-kart{background:var(--bg-card);border:2px solid var(--accent-border);border-radius:16px;padding:14px 22px;text-align:center;min-width:130px;}
+    .kaz-sayi-kart-label{font-size:11px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+    .kaz-sayi-kart-sayi{font-family:'Menlo','Consolas',monospace;font-size:36px;font-weight:bold;letter-spacing:8px;color:var(--accent);}
+    .kaz-sayi-kart-sub{font-size:11px;color:var(--text-muted);margin-top:4px;}
+    .kaz-coins-earned{font-size:13px;color:var(--coin-color);background:var(--coin-bg);border:1px solid var(--coin-border);border-radius:12px;padding:6px 16px;display:inline-flex;align-items:center;gap:6px;}
+
+    /* ============ POPUP / COIN ============ */
+    .coin-pop{position:fixed;top:64px;right:16px;background:var(--coin-bg);border:1px solid var(--coin-color);color:var(--coin-color);font-size:14px;font-weight:bold;padding:7px 16px;border-radius:18px;pointer-events:none;opacity:0;transition:opacity 0.3s,transform 0.3s;transform:translateY(0px);z-index:999;}
+    .coin-pop.show{opacity:1;transform:translateY(-8px);}
+    .popup-overlay{position:fixed;inset:0;background:#00000090;z-index:1000;display:none;align-items:center;justify-content:center;}
+    .popup-overlay.show{display:flex;}
+    .popup-box{background:var(--bg-card);border:1px solid #2a2a55;border-radius:18px;padding:28px;text-align:center;max-width:320px;width:90%;animation:popIn 0.22s ease;}
+    @keyframes popIn{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+    .popup-icon{font-size:44px;margin-bottom:10px;}
+    .popup-title{font-size:19px;font-weight:bold;margin-bottom:8px;}
+    .popup-msg{font-size:13px;color:var(--text-muted);margin-bottom:18px;line-height:1.6;}
+    .popup-btn{background:#1a1a2a;color:var(--text-secondary);border:1px solid #2a2a3a;border-radius:10px;padding:9px 26px;font-size:14px;cursor:pointer;}
+
+    /* ============ FOOTER ============ */
+    .footer{height:46px;background:#070710;border-top:1px solid #111120;display:flex;align-items:center;justify-content:space-between;padding:0 16px;padding-bottom:env(safe-area-inset-bottom,0px);flex-shrink:0;}
+    .footer-l{font-size:18px;font-weight:bold;color:var(--footer-brand);letter-spacing:2px;animation:footerGlow 3s infinite;}
+    @keyframes footerGlow{0%,100%{text-shadow:0 0 6px var(--accent-glow);opacity:0.85;}50%{text-shadow:0 0 14px var(--accent-glow);opacity:1;}}
+    .footer-r{font-size:12px;color:#3a3a55;display:flex;align-items:center;gap:4px;}
+    .footer-r .brand{color:#5a5a80;font-weight:bold;letter-spacing:1px;}
+
+    /* ============ İNDİRİLENLER ============ */
+    .indirilenler-grid{display:flex;flex-direction:column;gap:10px;width:100%;max-width:480px;margin-top:8px;}
+    .ind-item{background:var(--bg-input);border:1px solid var(--border-card);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;}
+    .ind-item-icon{font-size:24px;flex-shrink:0;}
+    .ind-item-info{flex:1;}
+    .ind-item-ad{font-size:14px;font-weight:bold;color:var(--text-primary);}
+    .ind-item-tip{font-size:10px;color:var(--ai-color);margin-top:2px;}
+    .ind-bos{text-align:center;color:var(--text-muted);font-size:13px;padding:20px;}
+
+    /* ============ RENKLİ YARDIMCI ============ */
+    .yesil{color:#00ff88;}.sari{color:#ffcc00;}.mavi{color:#0088ff;}.gri{color:var(--text-dim);}
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width:480px){
+      .game-title{font-size:44px;}
+      .menu-btn,.btn-market,.btn-multi,.btn-stat{width:88vw;max-width:310px;font-size:16px;}
+      .stat-grid{grid-template-columns:1fr 1fr;}
+      .mod-grid{gap:10px;max-width:95vw;}
+      .ekran{font-size:40px;letter-spacing:10px;}
+      .numpad{gap:7px;max-width:95vw;}
+      .nkey{font-size:24px;padding:20px 6px;}
+      .panel{padding:7px 6px;}
+      .mini-ekran{font-size:24px;letter-spacing:4px;min-height:48px;}
+      .mini-pad{gap:4px;}
+      .mkey{font-size:20px;padding:17px 2px;}
+      .gecmis{font-size:16px;min-height:70px;max-height:110px;}
+      .kaz-title{font-size:32px;}
+      .chat-panel{width:150px;min-width:130px;}
+    }
+    @media (max-width:360px){
+      .mkey{font-size:17px;padding:14px 2px;}
+      .nkey{font-size:20px;padding:16px 4px;}
+      .chat-panel{width:36px;min-width:36px;}
+    }
+    @media (max-height:600px){
+      .center{gap:8px;padding:10px;}
+      .game-title{font-size:36px;}
+      .setup-wrap{gap:8px;padding:10px;}
+      .ekran{min-height:66px;font-size:36px;}
+      .nkey{padding:16px 6px;}
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="topbar-coins" id="topbar-coins">
+      <span class="tc-icon">🪙</span>
+      <span id="topbar-coin-val">0</span>
+    </div>
+    <div class="fps-badge" id="fps-badge">-- FPS</div>
+    <div class="topbar-right">
+      <button class="fullscreen-btn" id="fs-btn" onclick="tamEkranToggle()">⛶</button>
+      <div class="topbar-credit">v9</div>
+    </div>
+  </div>
+
+  <div class="coin-pop" id="coin-pop">🪙 +<span id="coin-pop-val">0</span></div>
+
+  <div class="popup-overlay" id="coin-popup-overlay" onclick="kapatPopup()">
+    <div class="popup-box" onclick="event.stopPropagation()">
+      <div class="popup-icon">🪙</div>
+      <div class="popup-title" style="color:#ff4444" data-i18n="insufficientCoins">Yetersiz NumCoin!</div>
+      <div class="popup-msg" id="popup-msg"></div>
+      <button class="popup-btn" onclick="kapatPopup()" data-i18n="ok">Tamam</button>
+    </div>
+  </div>
+
+  <div class="popup-overlay" id="genel-popup" onclick="document.getElementById('genel-popup').classList.remove('show')">
+    <div class="popup-box" onclick="event.stopPropagation()">
+      <div class="popup-icon" id="genel-popup-icon">ℹ️</div>
+      <div class="popup-title" id="genel-popup-title" style="color:#aaa"></div>
+      <div class="popup-msg" id="genel-popup-msg"></div>
+      <button class="popup-btn" onclick="document.getElementById('genel-popup').classList.remove('show')" data-i18n="ok">Tamam</button>
+    </div>
+  </div>
+
+  <!-- ANA MENÜ -->
+  <div id="ana-menu" class="screen">
+    <div class="center">
+      <div class="game-title">NumGuess</div>
+      <div class="game-sub" data-i18n="subtitle">Sayı Tahmin Oyunu</div>
+      <div class="coins-badge" id="menu-coins-badge" onclick="git('market')">
+        <span class="coin-icon">🪙</span>
+        <span id="menu-coins-val">0</span>
+        <span class="coin-label">NumCoins</span>
+      </div>
+      <button class="menu-btn btn-oyna" onclick="git('mod-sec')" data-i18n="play">🎮 Oyna</button>
+      <button class="btn-multi" onclick="git('multiplayer')" data-i18n="multiplayer">🌐 Multiplayer</button>
+      <button class="btn-stat" onclick="git('istatistik')">📊 İstatistik</button>
+      <button class="btn-market" onclick="git('market')" data-i18n="market">🛒 Market</button>
+      <button class="btn-destek" onclick="git('destek')">🆘 Destek & İletişim</button>
+      <button class="menu-btn btn-ayarlar" onclick="git('ayarlar')" data-i18n="settings" style="position:relative">
+        ⚙️ Ayarlar
+        <span class="market-notif-badge" id="ayarlar-badge">!</span>
+      </button>
+    </div>
+    <div class="footer">
+      <div class="footer-l">NumGuess</div>
+      <div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div>
+    </div>
+  </div>
+
+  <!-- İSTATİSTİK -->
+  <div id="istatistik" class="screen">
+    <div class="stat-wrap">
+      <div class="stat-title">📊 İstatistik</div>
+      <div class="stat-grid" id="stat-ozet-grid"></div>
+      <div class="stat-section-title">🎮 OYUN İSTATİSTİKLERİ</div>
+      <div id="stat-oyun-satirlar" style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:500px;"></div>
+      <div class="stat-section-title">💰 PARA İSTATİSTİKLERİ</div>
+      <div id="stat-para-satirlar" style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:500px;"></div>
+      <div class="stat-section-title">🏆 EN İYİ SKORLAR</div>
+      <div id="stat-skor-satirlar" style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:500px;"></div>
+      <div class="stat-section-title">📈 MODA DAĞILIMI</div>
+      <div class="stat-bar-wrap" id="stat-mod-dagilim" style="width:100%;max-width:500px;"></div>
+      <button class="stat-sifirla-btn" onclick="istatistikSifirla()">🗑️ İstatistikleri Sıfırla</button>
+      <button class="btn-geri" onclick="git('ana-menu')" data-i18n="back">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- AYARLAR -->
+  <div id="ayarlar" class="screen">
+    <div class="center">
+      <div class="kart">
+        <div class="kart-baslik" data-i18n="settings">⚙️ Ayarlar</div>
+        <div class="ayar-satir">
+          <div>
+            <div data-i18n="fpsLabel">FPS Göstergesi</div>
+            <div class="ayar-satir-acik" data-i18n="fpsDesc">Saniye başı kare sayısı</div>
+          </div>
+          <div class="toggle" id="fps-toggle" onclick="fpsDegistir()"></div>
+        </div>
+        <div class="ayar-satir">
+          <div>
+            <div data-i18n="timerLabel">⏱️ Süre Sayacı</div>
+            <div class="ayar-satir-acik" data-i18n="timerDesc">Oyun süresi göster</div>
+          </div>
+          <div class="toggle" id="timer-toggle" onclick="timerAyarDegistir()"></div>
+        </div>
+        <div class="ayar-satir">
+          <div>
+            <div data-i18n="perfLabel">⚡ Performans Modu</div>
+            <div class="ayar-satir-acik" data-i18n="perfDesc">Düşük: animasyon kapalı</div>
+          </div>
+          <select class="perf-select" id="perf-select" onchange="perfDegistir(this.value)">
+            <option value="high" data-i18n="perfHigh">🔥 Yüksek</option>
+            <option value="mid" data-i18n="perfMid">⚡ Orta</option>
+            <option value="low" data-i18n="perfLow">🧊 Düşük</option>
+          </select>
+        </div>
+        <div class="ayar-satir">
+          <div>
+            <div data-i18n="langLabel">🌐 Dil / Language</div>
+            <div class="ayar-satir-acik">TR / EN / DE</div>
+          </div>
+          <select class="perf-select" id="lang-select" onchange="dilDegistir(this.value)">
+            <option value="tr">🇹🇷 Türkçe</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="de">🇩🇪 Deutsch</option>
+          </select>
+        </div>
+        <div class="ayar-satir">
+          <span data-i18n="coinsLabel">NumCoins</span>
+          <span style="color:var(--coin-color);font-weight:bold" id="ayarlar-coins">0 🪙</span>
+        </div>
+      </div>
+      <button class="menu-btn btn-ayarlar" onclick="git('indirilenler')" style="width:100%;max-width:480px;position:relative" data-i18n="downloadsBtn">
+        📦 İndirilenler
+        <span class="market-notif-badge" id="indirilenler-badge" style="display:none;"></span>
+      </button>
+      <button class="btn-geri" onclick="git('ana-menu')" data-i18n="back">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- İNDİRİLENLER -->
+  <div id="indirilenler" class="screen">
+    <div class="center">
+      <div style="font-size:22px;font-weight:bold;color:var(--market-color)" data-i18n="downloadsTitle">📦 İndirilenler</div>
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;max-width:420px" data-i18n="downloadsDesc">Market'ten satın aldığın kozmetik içerikleri aktif/pasif yapabilirsin.</div>
+      <div class="indirilenler-grid" id="indirilenler-grid"></div>
+      <button class="btn-geri" onclick="git('ayarlar')" data-i18n="back">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- MARKET -->
+  <div id="market" class="screen">
+    <div class="center">
+      <div class="market-title" data-i18n="marketTitle">🛒 Market</div>
+      <div class="market-coins-info">🪙 <span id="market-coins-val">0</span> NumCoin</div>
+      <div class="market-indirilenler-hint" id="market-ind-hint" data-i18n="marketHint">
+        💡 Satın aldığın ürünleri <b>Ayarlar → İndirilenler</b> bölümünden yönetebilirsin!
+      </div>
+      <div class="market-grid" id="market-grid"></div>
+      <div class="market-sub" data-i18n="marketSub">💡 Market sadece kozmetik içerik sunar. Hiçbir şey oyun dengesini bozmaz.</div>
+      <button class="btn-geri" onclick="git('ana-menu')" data-i18n="back">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- DESTEK -->
+  <div id="destek" class="screen">
+    <div class="center">
+      <div style="font-size:28px;font-weight:900;color:#44aaff;letter-spacing:2px;">🆘 Destek & İletişim</div>
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;max-width:420px;">Bir sorunla karşılaştıysan aşağıdaki kanallardan bana ulaşabilirsin.</div>
+
+      <div class="destek-kart">
+        <div class="destek-baslik">📬 İletişim Kanalları</div>
+
+        <div class="destek-satir">
+          <div class="destek-icon">💬</div>
+          <div class="destek-info">
+            <div class="destek-info-baslik">Discord Sunucusu</div>
+            <div class="destek-info-alt">Bug bildirimi, öneri ve sohbet</div>
+          </div>
+          <a class="destek-link" href="https://discord.gg/65gWDVsXvn" target="_blank">Katıl</a>
+        </div>
+
+        <div class="destek-satir">
+          <div class="destek-icon">🎮</div>
+          <div class="destek-info">
+            <div class="destek-info-baslik">Discord Kullanıcı Adı</div>
+            <div class="destek-info-alt" id="dc-kullanici" style="color:var(--accent);font-weight:bold;font-size:14px;">tgmeo</div>
+          </div>
+          <button class="destek-link" onclick="dcKopyala()">Kopyala</button>
+        </div>
+
+        <div class="destek-satir">
+          <div class="destek-icon">🐛</div>
+          <div class="destek-info">
+            <div class="destek-info-baslik">Bug Bildirimi</div>
+            <div class="destek-info-alt">Discord DM veya sunucu #bug-bildiri kanalı</div>
+          </div>
+        </div>
+
+        <div class="destek-satir">
+          <div class="destek-icon">💡</div>
+          <div class="destek-info">
+            <div class="destek-info-baslik">Öneri</div>
+            <div class="destek-info-alt">Yeni özellik veya iyileştirme fikirlerin için Discord #öneri kanalı</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="destek-kart">
+        <div class="destek-baslik">🕐 Çalışma Saatleri</div>
+        <div class="destek-saat-grid">
+          <div class="destek-saat-item">
+            <div class="destek-saat-gun">Hafta İçi</div>
+            <div class="destek-saat-val">18:00 – 23:00</div>
+          </div>
+          <div class="destek-saat-item">
+            <div class="destek-saat-gun">Hafta Sonu</div>
+            <div class="destek-saat-val">12:00 – 00:00</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:6px;">Türkiye saati (UTC+3) • Mesajlara en geç 24 saat içinde dönüyorum</div>
+      </div>
+
+      <div class="destek-kart" style="background:#080a08;border-color:#1a3a1a;">
+        <div style="font-size:13px;color:#44ee66;font-weight:bold;margin-bottom:6px;">💡 Bug bildirirken şunları belirt:</div>
+        <div style="font-size:12px;color:var(--text-secondary);line-height:1.8;">
+          • Hangi cihaz / tarayıcı kullandığını<br>
+          • Hatanın ne zaman / nasıl oluştuğunu<br>
+          • Mümkünse ekran görüntüsü
+        </div>
+      </div>
+
+      <button class="btn-geri" onclick="git('ana-menu')">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- MULTIPLAYER LOBBY -->
+  <div id="multiplayer" class="screen">
+    <div class="multi-wrap">
+      <div class="multi-title">🌐 Multiplayer</div>
+      <div class="multi-subtitle">Farklı cihazlardan aynı anda oyna</div>
+      <div id="firebase-warning" style="display:none;background:#0a0a1a;border:1px solid var(--accent-border);border-radius:14px;padding:16px;max-width:460px;width:100%;font-size:12px;color:var(--text-secondary);">
+        <b style="color:var(--accent)">⚠️ Firebase Kurulu Değil</b><br>Cross-device multiplayer için Firebase gerekli.
+      </div>
+
+      <!-- Oda Kur -->
+      <div class="multi-card">
+        <div class="multi-card-title">🏠 Oda Kur</div>
+        <div id="oda-kodu-display" class="oda-kodu-goster" onclick="kopyalaKod()">------</div>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;">Kodu arkadaşına gönder • Tıkla kopyala</div>
+        <!-- Şifre — toggle + zorunlu input -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="toggle" id="sifre-toggle" onclick="sifreToggle()"></div>
+            <span style="font-size:13px;color:var(--text-secondary)">🔒 Şifre Koy</span>
+          </div>
+          <input type="text" class="oda-input" id="sifre-input" placeholder="Şifre gir (zorunlu)" maxlength="20"
+            style="display:none;font-size:15px;letter-spacing:2px;font-family:inherit;">
+          <div id="sifre-uyari" style="display:none;color:#ff4444;font-size:12px;text-align:center;">⚠️ Şifre koy seçiliyse şifre boş bırakılamaz!</div>
+        </div>
+        <div class="oda-durum bekliyor" id="oda-kur-durum">Oda oluşturmak için butona bas</div>
+        <button class="multi-btn" id="oda-kur-btn" onclick="odaKur()">🚀 Oda Oluştur</button>
+        <div id="oda-kur-hazir" style="display:none;flex-direction:column;gap:6px;align-items:center;">
+          <div style="font-size:11px;color:var(--text-muted);text-align:center;">Arkadaşın katılması bekleniyor...</div>
+          <button class="btn-geri" onclick="odaIptal()" style="margin-top:6px;">✕ İptal Et</button>
+        </div>
+      </div>
+
+      <!-- Odaya Katıl (kod ile) -->
+      <div class="multi-card">
+        <div class="multi-card-title">🔗 Kod ile Katıl</div>
+        <input type="text" class="oda-input" id="katil-input" placeholder="6 haneli kodu gir" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+        <div class="oda-durum" id="oda-katil-durum" style="display:none"></div>
+        <button class="multi-btn" onclick="odayaKatil()">🔗 Katıl</button>
+      </div>
+
+      <!-- Açık Odalar Listesi -->
+      <div class="multi-card" style="width:100%;max-width:480px;">
+        <div class="multi-card-title" style="display:flex;align-items:center;justify-content:space-between;">
+          <span>🌍 Açık Odalar</span>
+          <button onclick="odaListesiniYenile()" style="background:none;border:1px solid var(--multi-color);color:var(--multi-color);border-radius:8px;padding:4px 10px;cursor:pointer;font-size:12px;">🔄 Yenile</button>
+        </div>
+        <div id="oda-listesi" style="display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;">
+          <div style="text-align:center;color:var(--text-muted);font-size:13px;padding:16px;">Yükleniyor...</div>
+        </div>
+      </div>
+
+      <!-- Şifre doğrulama popup -->
+      <div class="popup-overlay" id="sifre-popup">
+        <div class="popup-box" onclick="event.stopPropagation()">
+          <div class="popup-icon">🔒</div>
+          <div class="popup-title" style="color:var(--multi-color)">Oda Şifresi</div>
+          <div class="popup-msg">Bu oda şifreli. Şifreyi girerek katıl.</div>
+          <input type="text" class="oda-input" id="popup-sifre-input" placeholder="Şifreyi gir" maxlength="20"
+            style="font-size:15px;letter-spacing:2px;font-family:inherit;margin-bottom:12px;"
+            onkeydown="if(event.key==='Enter')sifreDogrula()">
+          <div style="display:flex;gap:10px;justify-content:center;">
+            <button class="multi-btn green" onclick="sifreDogrula()" style="width:auto;padding:10px 20px;">✅ Gir</button>
+            <button class="popup-btn" onclick="sifrePopupKapat()">İptal</button>
+          </div>
+          <div id="sifre-hata" style="color:#ff4444;font-size:12px;margin-top:8px;display:none">❌ Yanlış şifre!</div>
+        </div>
+      </div>
+
+      <button class="btn-geri" onclick="multiTemizle();git('ana-menu')">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- MULTI SETUP (sayı giriş) -->
+  <div id="multi-setup" class="screen">
+    <div class="setup-wrap">
+      <div class="setup-title" id="ms-title" data-i18n="enterSecret">Gizli Sayını Gir</div>
+      <div class="setup-sub" id="ms-sub" data-i18n="enterSecretSub">4 basamaklı, her rakam farklı olsun</div>
+
+      <!-- Bekleme ekranı: sayı girildi, diğer oyuncu bekleniyor -->
+      <div id="ms-bekleme" style="display:none;flex-direction:column;align-items:center;gap:10px;padding:20px;">
+        <div style="color:var(--multi-color);font-size:15px" data-i18n="numberSaved">Sayın kaydedildi!</div>
+        <!-- Hazır butonu -->
+        <button class="multi-btn green" id="ms-hazir-btn" onclick="msHazirBasildi()">✅ Hazırım</button>
+        <!-- Geri sayım alanı -->
+        <div class="hazir-countdown" id="ms-countdown-wrap" style="display:none">
+          Diğer oyuncu bekleniyor... Otomatik başlangıç: <span id="ms-countdown">30</span>s
+        </div>
+        <div class="bekleme-dots"><div class="bekleme-dot"></div><div class="bekleme-dot"></div><div class="bekleme-dot"></div></div>
+      </div>
+
+      <div id="ms-input-wrap" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="ekran aktif" id="ms-ekran">----</div>
+        <div class="numpad">
+          <button class="nkey" onclick="msT('7')">7</button><button class="nkey" onclick="msT('8')">8</button><button class="nkey" onclick="msT('9')">9</button>
+          <button class="nkey" onclick="msT('4')">4</button><button class="nkey" onclick="msT('5')">5</button><button class="nkey" onclick="msT('6')">6</button>
+          <button class="nkey" onclick="msT('1')">1</button><button class="nkey" onclick="msT('2')">2</button><button class="nkey" onclick="msT('3')">3</button>
+          <button class="nkey" onclick="msT('Sil')">⌫</button><button class="nkey" onclick="msT('0')">0</button><button class="nkey nkey-ok" onclick="msT('OK')">Onay</button>
+        </div>
+      </div>
+      <button class="btn-geri" onclick="multiTemizle();git('multiplayer')">← İptal</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- MULTI OYUN -->
+  <div id="multi-oyun" class="screen">
+    <div class="multi-oyun-container">
+      <div class="timer-bar" id="timer-bar-multi">⏱️ <span id="timer-val-multi">00:00</span></div>
+      <div class="mesaj-bar" id="multi-mesaj-bar">Oynuyorsunuz!</div>
+      <div class="multi-game-area">
+        <div style="display:flex;flex:1;overflow:hidden;min-width:0;min-height:0;align-items:stretch;">
+          <div class="panel">
+            <div class="panel-header p1-head" id="mp1-head">SEN</div>
+            <div class="mini-ekran aktif" id="mp1-ekran">----</div>
+            <div class="mini-pad" id="mp1-pad">
+              <button class="mkey" onclick="moT('7')">7</button><button class="mkey" onclick="moT('8')">8</button><button class="mkey" onclick="moT('9')">9</button>
+              <button class="mkey" onclick="moT('4')">4</button><button class="mkey" onclick="moT('5')">5</button><button class="mkey" onclick="moT('6')">6</button>
+              <button class="mkey" onclick="moT('1')">1</button><button class="mkey" onclick="moT('2')">2</button><button class="mkey" onclick="moT('3')">3</button>
+              <button class="mkey" onclick="moT('Sil')">⌫</button><button class="mkey" onclick="moT('0')">0</button><button class="mkey mkey-ok" onclick="moT('OK')">Onay</button>
+            </div>
+            <div class="deneme-info" id="mp1-den">0 deneme</div>
+            <div class="gecmis" id="mp1-gec"></div>
+          </div>
+          <div class="panel-sep"></div>
+          <div class="panel">
+            <div class="panel-header p2-head" id="mp2-head">RAKİP</div>
+            <div class="mini-ekran" id="mp2-ekran" style="color:var(--p2-color)">----</div>
+            <div class="deneme-info" id="mp2-den">0 deneme</div>
+            <div class="gecmis" id="mp2-gec"></div>
+          </div>
+        </div>
+        <!-- CHAT PANELİ — sağa tam yaslandı -->
+        <div class="chat-panel" id="chat-panel">
+          <div class="chat-header">
+            <span>💬</span>
+            <button class="chat-toggle-btn" onclick="toggleChat()">◀</button>
+          </div>
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="chat-input-area">
+            <div class="chat-input-row">
+              <input type="text" class="chat-input" id="chat-input" placeholder="Mesaj..." maxlength="80" onkeydown="if(event.key==='Enter')sendChat()">
+              <button class="chat-gif-btn" onclick="toggleGifPicker()">🎬</button>
+              <button class="chat-send-btn" onclick="sendChat()">➤</button>
+            </div>
+            <div class="gif-picker" id="gif-picker" style="display:none;">
+              <div class="gif-picker-header">
+                <input type="text" class="gif-search-input" id="gif-search-input" placeholder="GIF ara..." onkeydown="if(event.key==='Enter')searchGifs()">
+                <button class="gif-search-btn" onclick="searchGifs()">🔍</button>
+              </div>
+              <div class="gif-cost-info" id="gif-cost-info">🪙 GIF göndermek için 2 coin</div>
+              <div class="gif-grid" id="gif-grid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- MOD SEÇİM -->
+  <div id="mod-sec" class="screen">
+    <div class="center">
+      <div class="setup-title" data-i18n="gameMode">Oyun Modu</div>
+      <div class="mod-grid">
+        <div class="mod-kart" onclick="git('oyuncu-setup')">
+          <div class="mod-icon">👥</div>
+          <div class="mod-ad" data-i18n="twoPlayer">2 Kişilik</div>
+          <div class="mod-acik" data-i18n="twoPlayerDesc">Aynı ekranda sırayla</div>
+        </div>
+        <div class="mod-kart" onclick="git('zorluk-sec')">
+          <div class="mod-icon">🤖</div>
+          <div class="mod-ad" data-i18n="vsAi">Yapay Zekaya Karşı</div>
+          <div class="mod-acik" data-i18n="vsAiDesc">AI ile oyna</div>
+        </div>
+      </div>
+      <button class="btn-geri" onclick="git('ana-menu')" data-i18n="back">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- ZORLUK -->
+  <div id="zorluk-sec" class="screen">
+    <div class="center">
+      <div class="setup-title" data-i18n="aiDifficulty">🤖 Yapay Zeka Zorluğu</div>
+      <div class="zorluk-grid">
+        <button class="zorluk-btn z-kolay" onclick="aiBaslat('kolay')" data-i18n="easy">🟢 Kolay — Rastgele tahmin</button>
+        <button class="zorluk-btn z-orta" onclick="aiBaslat('orta')" data-i18n="medium">🟡 Orta — Yarı akıllı</button>
+        <button class="zorluk-btn z-zor" onclick="aiBaslat('zor')" data-i18n="hard">🔴 Zor — Minimax AI</button>
+      </div>
+      <button class="btn-geri" onclick="git('mod-sec')" data-i18n="back">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- 2 KİŞİLİK SETUP -->
+  <div id="oyuncu-setup" class="screen">
+    <div class="setup-wrap">
+      <div class="setup-title" id="s-title" data-i18n="p1Enter">1. Oyuncu — Sayını Gir</div>
+      <div class="setup-sub" id="s-sub" data-i18n="enterSecretSub">Gizli 4 basamaklı sayını gir (rakamlar farklı)</div>
+      <div class="ekran aktif" id="s-ekran">----</div>
+      <div class="numpad">
+        <button class="nkey" onclick="sT('7')">7</button><button class="nkey" onclick="sT('8')">8</button><button class="nkey" onclick="sT('9')">9</button>
+        <button class="nkey" onclick="sT('4')">4</button><button class="nkey" onclick="sT('5')">5</button><button class="nkey" onclick="sT('6')">6</button>
+        <button class="nkey" onclick="sT('1')">1</button><button class="nkey" onclick="sT('2')">2</button><button class="nkey" onclick="sT('3')">3</button>
+        <button class="nkey" onclick="sT('Sil')">⌫</button><button class="nkey" onclick="sT('0')">0</button><button class="nkey nkey-ok" onclick="sT('OK')">Onay</button>
+      </div>
+      <button class="btn-geri" onclick="setupGeri()" data-i18n="back">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- AI SETUP -->
+  <div id="ai-setup" class="screen">
+    <div class="setup-wrap">
+      <div class="setup-title" data-i18n="enterYourNumber">Sayını Gir</div>
+      <div class="setup-sub" data-i18n="aiGuessDesc">Yapay zekanın bulması gereken gizli sayın</div>
+      <div class="ekran aktif" id="ai-ekran">----</div>
+      <div class="numpad">
+        <button class="nkey" onclick="aiST('7')">7</button><button class="nkey" onclick="aiST('8')">8</button><button class="nkey" onclick="aiST('9')">9</button>
+        <button class="nkey" onclick="aiST('4')">4</button><button class="nkey" onclick="aiST('5')">5</button><button class="nkey" onclick="aiST('6')">6</button>
+        <button class="nkey" onclick="aiST('1')">1</button><button class="nkey" onclick="aiST('2')">2</button><button class="nkey" onclick="aiST('3')">3</button>
+        <button class="nkey" onclick="aiST('Sil')">⌫</button><button class="nkey" onclick="aiST('0')">0</button><button class="nkey nkey-ok" onclick="aiST('OK')">Onay</button>
+      </div>
+      <button class="btn-geri" onclick="git('zorluk-sec')" data-i18n="back">← Geri</button>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- OYUN (2 Kişilik) -->
+  <div id="oyun" class="screen">
+    <div class="oyun-wrap">
+      <div class="timer-bar" id="timer-bar-2p">⏱️ <span id="timer-val-2p">00:00</span></div>
+      <div class="mesaj-bar" id="mesaj-bar"></div>
+      <div class="panels">
+        <div class="panel">
+          <div class="panel-header p1-head" data-i18n="player1">1. OYUNCU</div>
+          <div class="mini-ekran aktif" id="p1-ekran">----</div>
+          <div class="mini-pad" id="p1-pad">
+            <button class="mkey" onclick="oT(1,'7')">7</button><button class="mkey" onclick="oT(1,'8')">8</button><button class="mkey" onclick="oT(1,'9')">9</button>
+            <button class="mkey" onclick="oT(1,'4')">4</button><button class="mkey" onclick="oT(1,'5')">5</button><button class="mkey" onclick="oT(1,'6')">6</button>
+            <button class="mkey" onclick="oT(1,'1')">1</button><button class="mkey" onclick="oT(1,'2')">2</button><button class="mkey" onclick="oT(1,'3')">3</button>
+            <button class="mkey" onclick="oT(1,'Sil')">⌫</button><button class="mkey" onclick="oT(1,'0')">0</button><button class="mkey mkey-ok" onclick="oT(1,'OK')">Onay</button>
+          </div>
+          <div class="deneme-info" id="p1-den">0 deneme</div>
+          <div class="gecmis" id="p1-gec"></div>
+        </div>
+        <div class="panel-sep"></div>
+        <div class="panel">
+          <div class="panel-header p2-head" data-i18n="player2">2. OYUNCU</div>
+          <div class="mini-ekran" id="p2-ekran">----</div>
+          <div class="mini-pad" id="p2-pad">
+            <button class="mkey off" onclick="oT(2,'7')">7</button><button class="mkey off" onclick="oT(2,'8')">8</button><button class="mkey off" onclick="oT(2,'9')">9</button>
+            <button class="mkey off" onclick="oT(2,'4')">4</button><button class="mkey off" onclick="oT(2,'5')">5</button><button class="mkey off" onclick="oT(2,'6')">6</button>
+            <button class="mkey off" onclick="oT(2,'1')">1</button><button class="mkey off" onclick="oT(2,'2')">2</button><button class="mkey off" onclick="oT(2,'3')">3</button>
+            <button class="mkey off" onclick="oT(2,'Sil')">⌫</button><button class="mkey off" onclick="oT(2,'0')">0</button><button class="mkey mkey-ok off" onclick="oT(2,'OK')">Onay</button>
+          </div>
+          <div class="deneme-info" id="p2-den">0 deneme</div>
+          <div class="gecmis" id="p2-gec"></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- AI OYUN -->
+  <div id="ai-oyun" class="screen">
+    <div class="oyun-wrap">
+      <div class="timer-bar" id="timer-bar-ai">⏱️ <span id="timer-val-ai">00:00</span></div>
+      <div class="mesaj-bar" id="ai-mesaj-bar" data-i18n="yourTurn">Senin sıran!</div>
+      <div class="panels">
+        <div class="panel">
+          <div class="panel-header p1-head" data-i18n="you">SEN</div>
+          <div class="mini-ekran aktif" id="ap1-ekran">----</div>
+          <div class="mini-pad" id="ap1-pad">
+            <button class="mkey" onclick="aoT('7')">7</button><button class="mkey" onclick="aoT('8')">8</button><button class="mkey" onclick="aoT('9')">9</button>
+            <button class="mkey" onclick="aoT('4')">4</button><button class="mkey" onclick="aoT('5')">5</button><button class="mkey" onclick="aoT('6')">6</button>
+            <button class="mkey" onclick="aoT('1')">1</button><button class="mkey" onclick="aoT('2')">2</button><button class="mkey" onclick="aoT('3')">3</button>
+            <button class="mkey" onclick="aoT('Sil')">⌫</button><button class="mkey" onclick="aoT('0')">0</button><button class="mkey mkey-ok" onclick="aoT('OK')">Onay</button>
+          </div>
+          <div class="deneme-info" id="ap1-den">0 deneme</div>
+          <div class="gecmis" id="ap1-gec"></div>
+        </div>
+        <div class="panel-sep"></div>
+        <div class="panel">
+          <div class="panel-header p-ai-head" id="ai-panel-head">🤖 AI</div>
+          <div class="mini-ekran" id="ap2-ekran" style="color:var(--ai-color)">----</div>
+          <div class="ai-dusunuyor" id="ai-dusunuyor" style="display:none" data-i18n="thinking">Düşünüyor...</div>
+          <div class="deneme-info" id="ap2-den">0 deneme</div>
+          <div class="gecmis" id="ap2-gec"></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+  <!-- KAZANDI -->
+  <div id="kazandi" class="screen">
+    <div class="kazandi-wrap">
+      <div class="kaz-title" id="kaz-title"></div>
+      <div class="kaz-sub" id="kaz-sub"></div>
+      <div class="kaz-sub" id="kaz-sure" style="color:var(--accent);font-size:14px;display:none"></div>
+      <!-- Gizli sayılar gösterimi -->
+      <div id="kaz-sayilar-wrap" style="display:none;gap:12px;justify-content:center;flex-wrap:wrap;width:100%;max-width:480px;"></div>
+      <div class="kaz-coins-earned" id="kaz-coins-earned" style="display:none">🪙 <span data-i18n="coinsEarned">Bu oyunda</span> <b id="kaz-coins-val">0</b> NumCoin <span data-i18n="coinsEarned2">kazandın!</span></div>
+      <div class="kaz-gecmis-wrap" id="kaz-gecmis-wrap"></div>
+      <div class="kaz-btns">
+        <button class="menu-btn btn-oyna" onclick="tekrar()" data-i18n="playAgain">🔄 Yeniden Oyna</button>
+        <button class="btn-geri" onclick="anaMenuye()" data-i18n="mainMenu">Ana Menü</button>
+      </div>
+    </div>
+    <div class="footer"><div class="footer-l">NumGuess</div><div class="footer-r"><span style="color:#2a2a40">Powered by</span>&nbsp;<span class="brand">tgmeo™</span></div></div>
+  </div>
+
+</div>
+
+<script>
+
+/* ================================================================
+   FIREBASE CONFIG
+   ================================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAuoVx9v9GdTMINHYzab_IYx0hTlcY_YXs",
+  authDomain: "numguess-9c21f.firebaseapp.com",
+  databaseURL: "https://numguess-9c21f-default-rtdb.firebaseio.com",
+  projectId: "numguess-9c21f",
+  storageBucket: "numguess-9c21f.firebasestorage.app",
+  messagingSenderId: "344425955526",
+  appId: "1:344425955526:web:6f334574fe0b92edbd97c7"
+};
+
+let db = null, firebaseOk = false;
+function initFirebase(){
+  try {
+    if(FIREBASE_CONFIG.apiKey === "BURAYA_API_KEY"){ firebaseOk=false; return; }
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+    firebaseOk = true;
+  } catch(e){ firebaseOk=false; }
+}
+
+/* ================================================================
+   DİL SİSTEMİ
+   ================================================================ */
+const DILLER = {
+  tr:{
+    subtitle:'Sayı Tahmin Oyunu',play:'🎮 Oyna',multiplayer:'🌐 Multiplayer',
+    market:'🛒 Market',settings:'⚙️ Ayarlar',back:'← Geri',ok:'Tamam',
+    insufficientCoins:'Yetersiz NumCoin!',confirm:'Onay',cancel:'← İptal',
+    fpsLabel:'FPS Göstergesi',fpsDesc:'Saniye başı kare sayısı',
+    timerLabel:'⏱️ Süre Sayacı',timerDesc:'Oyun süresi göster',
+    perfLabel:'⚡ Performans Modu',perfDesc:'Düşük: animasyon kapalı (iPhone önerili)',
+    perfHigh:'🔥 Yüksek',perfMid:'⚡ Orta',perfLow:'🧊 Düşük',
+    langLabel:'🌐 Dil / Language',coinsLabel:'NumCoins',
+    downloadsBtn:'📦 İndirilenler',downloadsTitle:'📦 İndirilenler',
+    downloadsDesc:'Market\'ten satın aldığın kozmetik içerikleri aktif/pasif yapabilirsin.',
+    marketTitle:'🛒 Market',
+    marketHint:'💡 Satın aldığın ürünleri <b>Ayarlar → İndirilenler</b> bölümünden yönetebilirsin!',
+    marketSub:'💡 Market sadece kozmetik içerik sunar.',
+    multiTitle:'🌐 Multiplayer',multiSub:'Farklı cihazlardan aynı anda oyna',
+    createRoom:'🏠 Oda Kur',roomCodeHint:'Kodu arkadaşına gönder • Tıkla kopyala',
+    roomCreatePrompt:'Oda oluşturmak için butona bas',createRoomBtn:'🚀 Oda Oluştur',
+    roomWaitingHint:'Arkadaşın katılınca sayıları gireceksiniz',waitingFriend:'⏳ Arkadaş bekleniyor...',
+    joinRoom:'🔗 Odaya Katıl',enterCode:'6 haneli kodu gir',joinBtn:'🔗 Katıl',
+    enterSecret:'Gizli Sayını Gir',enterSecretSub:'4 basamaklı, her rakam farklı olsun',
+    numberSaved:'Sayın kaydedildi!',
+    gameMode:'Oyun Modu',twoPlayer:'2 Kişilik',twoPlayerDesc:'Aynı ekranda sırayla',
+    vsAi:'Yapay Zekaya Karşı',vsAiDesc:'AI ile oyna',
+    aiDifficulty:'🤖 Yapay Zeka Zorluğu',
+    easy:'🟢 Kolay — Rastgele tahmin',medium:'🟡 Orta — Yarı akıllı',hard:'🔴 Zor — Minimax AI',
+    p1Enter:'1. Oyuncu — Sayını Gir',enterYourNumber:'Sayını Gir',
+    aiGuessDesc:'Yapay zekanın bulması gereken gizli sayın',
+    you:'SEN',opponent:'RAKİP',player1:'1. OYUNCU',player2:'2. OYUNCU',
+    yourTurn:'Senin sıran!',thinking:'Düşünüyor...',
+    playAgain:'🔄 Yeniden Oyna',mainMenu:'Ana Menü',
+    coinsEarned:'Bu oyunda',coinsEarned2:'kazandın!',
+    active:'Aktif',inactive:'Pasif',noDownloads:'Henüz satın alınan ürün yok.',
+    activated:'aktifleştirildi',deactivated:'pasifleştirildi',
+    copied:'Kopyalandı!',codeCopied:'Oda kodu kopyalandı:',
+    roomNotFound:'❌ Oda bulunamadı.',roomFound:'✅ Oda bulundu! Sayını gir.',
+    searching:'🔍 Oda aranıyor...',connError:'❌ Bağlantı hatası.',
+    enterCode6:'⚠️ 6 haneli kodu gir',
+    youWon:'Sen Kazandın! 🎉',aiWon:'Yapay Zeka Kazandı! 🤖',
+    opponentWon:'Rakip Kazandı! 😤',p1Won:'1. Oyuncu Kazandı! 🎉',p2Won:'2. Oyuncu Kazandı! 🎉',
+    timeLabel:'⏱️ Süre:',triesIn:'denemede',found:'sayısını buldun!',
+    aiFoundIn:'denemede buldu. Sen',triesLabel:'deneme yaptın.',
+    chatPlaceholder:'Mesaj...',gifCost:'GIF göndermek için 2 coin',
+    gifSent:'GIF gönderildi!',notEnoughForGif:'GIF göndermek için 2 coin gerekiyor!',
+    chatConnected:'💬 Sohbet bağlandı',triesLabel2:'deneme'
+  },
+  en:{
+    subtitle:'Number Guessing Game',play:'🎮 Play',multiplayer:'🌐 Multiplayer',
+    market:'🛒 Market',settings:'⚙️ Settings',back:'← Back',ok:'OK',
+    insufficientCoins:'Not Enough NumCoins!',confirm:'OK',cancel:'← Cancel',
+    fpsLabel:'FPS Indicator',fpsDesc:'Frames per second',
+    timerLabel:'⏱️ Timer',timerDesc:'Show game timer',
+    perfLabel:'⚡ Performance Mode',perfDesc:'Low: no animations (recommended for iPhone)',
+    perfHigh:'🔥 High',perfMid:'⚡ Medium',perfLow:'🧊 Low',
+    langLabel:'🌐 Language',coinsLabel:'NumCoins',
+    downloadsBtn:'📦 Downloads',downloadsTitle:'📦 Downloads',
+    downloadsDesc:'Manage cosmetic items from the Market.',
+    marketTitle:'🛒 Market',
+    marketHint:'💡 Manage purchases from <b>Settings → Downloads</b>!',
+    marketSub:'💡 Market offers cosmetic items only.',
+    multiTitle:'🌐 Multiplayer',multiSub:'Play simultaneously from different devices',
+    createRoom:'🏠 Create Room',roomCodeHint:'Send code to your friend • Tap to copy',
+    roomCreatePrompt:'Press the button to create a room',createRoomBtn:'🚀 Create Room',
+    roomWaitingHint:'Enter numbers when your friend joins',waitingFriend:'⏳ Waiting for friend...',
+    joinRoom:'🔗 Join Room',enterCode:'Enter 6-digit code',joinBtn:'🔗 Join',
+    enterSecret:'Enter Your Secret Number',enterSecretSub:'4 digits, each different',
+    numberSaved:'Number saved!',
+    gameMode:'Game Mode',twoPlayer:'2 Players',twoPlayerDesc:'Take turns on same screen',
+    vsAi:'Vs AI',vsAiDesc:'Play against AI',
+    aiDifficulty:'🤖 AI Difficulty',
+    easy:'🟢 Easy — Random',medium:'🟡 Medium — Semi-smart',hard:'🔴 Hard — Minimax AI',
+    p1Enter:'Player 1 — Enter Your Number',enterYourNumber:'Enter Your Number',
+    aiGuessDesc:'Your secret number for the AI to find',
+    you:'YOU',opponent:'OPPONENT',player1:'PLAYER 1',player2:'PLAYER 2',
+    yourTurn:'Your turn!',thinking:'Thinking...',
+    playAgain:'🔄 Play Again',mainMenu:'Main Menu',
+    coinsEarned:'You earned',coinsEarned2:'NumCoins!',
+    active:'Active',inactive:'Inactive',noDownloads:'No purchased items yet.',
+    activated:'activated',deactivated:'deactivated',
+    copied:'Copied!',codeCopied:'Room code copied:',
+    roomNotFound:'❌ Room not found.',roomFound:'✅ Room found! Enter your number.',
+    searching:'🔍 Searching...',connError:'❌ Connection error.',
+    enterCode6:'⚠️ Enter 6-digit code',
+    youWon:'You Won! 🎉',aiWon:'AI Won! 🤖',
+    opponentWon:'Opponent Won! 😤',p1Won:'Player 1 Won! 🎉',p2Won:'Player 2 Won! 🎉',
+    timeLabel:'⏱️ Time:',triesIn:'tries —',found:'found it!',
+    aiFoundIn:'tries. You made',triesLabel:'tries.',
+    chatPlaceholder:'Message...',gifCost:'2 coins to send a GIF',
+    gifSent:'GIF sent!',notEnoughForGif:'2 coins needed to send a GIF!',
+    chatConnected:'💬 Chat connected',triesLabel2:'tries'
+  },
+  de:{
+    subtitle:'Zahlen-Ratespiel',play:'🎮 Spielen',multiplayer:'🌐 Mehrspieler',
+    market:'🛒 Markt',settings:'⚙️ Einstellungen',back:'← Zurück',ok:'OK',
+    insufficientCoins:'Nicht genug NumCoins!',confirm:'OK',cancel:'← Abbrechen',
+    fpsLabel:'FPS-Anzeige',fpsDesc:'Bilder pro Sekunde',
+    timerLabel:'⏱️ Timer',timerDesc:'Spielzeit anzeigen',
+    perfLabel:'⚡ Leistungsmodus',perfDesc:'Niedrig: keine Animationen',
+    perfHigh:'🔥 Hoch',perfMid:'⚡ Mittel',perfLow:'🧊 Niedrig',
+    langLabel:'🌐 Sprache',coinsLabel:'NumCoins',
+    downloadsBtn:'📦 Downloads',downloadsTitle:'📦 Downloads',
+    downloadsDesc:'Kosmetische Artikel verwalten.',
+    marketTitle:'🛒 Markt',
+    marketHint:'💡 Käufe unter <b>Einstellungen → Downloads</b> verwalten!',
+    marketSub:'💡 Nur kosmetische Artikel.',
+    multiTitle:'🌐 Mehrspieler',multiSub:'Von verschiedenen Geräten spielen',
+    createRoom:'🏠 Raum erstellen',roomCodeHint:'Code an Freund senden',
+    roomCreatePrompt:'Knopf drücken',createRoomBtn:'🚀 Raum erstellen',
+    roomWaitingHint:'Zahlen eingeben wenn Freund beitritt',waitingFriend:'⏳ Warte auf Freund...',
+    joinRoom:'🔗 Beitreten',enterCode:'6-stelligen Code eingeben',joinBtn:'🔗 Beitreten',
+    enterSecret:'Geheimzahl eingeben',enterSecretSub:'4 Ziffern, jede verschieden',
+    numberSaved:'Gespeichert!',
+    gameMode:'Spielmodus',twoPlayer:'2 Spieler',twoPlayerDesc:'Abwechselnd',
+    vsAi:'Gegen KI',vsAiDesc:'Gegen KI spielen',
+    aiDifficulty:'🤖 KI-Schwierigkeit',
+    easy:'🟢 Leicht',medium:'🟡 Mittel',hard:'🔴 Schwer — Minimax',
+    p1Enter:'Spieler 1 — Zahl eingeben',enterYourNumber:'Deine Zahl',
+    aiGuessDesc:'Deine Geheimzahl für die KI',
+    you:'DU',opponent:'GEGNER',player1:'SPIELER 1',player2:'SPIELER 2',
+    yourTurn:'Du bist dran!',thinking:'Denkt nach...',
+    playAgain:'🔄 Nochmal',mainMenu:'Hauptmenü',
+    coinsEarned:'Du hast',coinsEarned2:'NumCoins verdient!',
+    active:'Aktiv',inactive:'Inaktiv',noDownloads:'Noch keine Käufe.',
+    activated:'aktiviert',deactivated:'deaktiviert',
+    copied:'Kopiert!',codeCopied:'Raumcode kopiert:',
+    roomNotFound:'❌ Raum nicht gefunden.',roomFound:'✅ Raum gefunden!',
+    searching:'🔍 Suche...',connError:'❌ Verbindungsfehler.',
+    enterCode6:'⚠️ 6-stelligen Code eingeben',
+    youWon:'Du hast gewonnen! 🎉',aiWon:'KI hat gewonnen! 🤖',
+    opponentWon:'Gegner hat gewonnen! 😤',p1Won:'Spieler 1 hat gewonnen! 🎉',p2Won:'Spieler 2 hat gewonnen! 🎉',
+    timeLabel:'⏱️ Zeit:',triesIn:'Versuchen —',found:'gefunden!',
+    aiFoundIn:'Versuchen. Du hast',triesLabel:'Versuche.',
+    chatPlaceholder:'Nachricht...',gifCost:'2 Coins für ein GIF',
+    gifSent:'GIF gesendet!',notEnoughForGif:'2 Coins für GIF nötig!',
+    chatConnected:'💬 Chat verbunden',triesLabel2:'Versuche'
+  }
+};
+
+let currentLang='tr';
+function t(key){ return (DILLER[currentLang]||DILLER['tr'])[key]||DILLER['tr'][key]||key; }
+function dilDegistir(lang){
+  currentLang=lang; localStorage.setItem('ng9_lang',lang);
+  document.getElementById('lang-select').value=lang;
+  document.documentElement.lang=lang;
+  const perfSel=document.getElementById('perf-select');
+  if(perfSel){perfSel.options[0].text=t('perfHigh');perfSel.options[1].text=t('perfMid');perfSel.options[2].text=t('perfLow');}
+  tumMetinleriGuncelle();
+}
+function loadLang(){ const s=localStorage.getItem('ng9_lang')||'tr'; currentLang=s; const sel=document.getElementById('lang-select'); if(sel)sel.value=s; }
+function tumMetinleriGuncelle(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');const v=t(k);if(v!==undefined)el.innerHTML=v;});
+  const ci=document.getElementById('chat-input'); if(ci) ci.placeholder=t('chatPlaceholder');
+  const gc=document.getElementById('gif-cost-info'); if(gc) gc.textContent='🪙 '+t('gifCost');
+  const ki=document.getElementById('katil-input'); if(ki) ki.placeholder=t('enterCode')||'6 haneli kodu gir';
+}
+
+/* ================================================================
+   İSTATİSTİK SİSTEMİ
+   ================================================================ */
+function istatistikYukle(){
+  const def={toplamOyun:0,kazanilanOyun:0,kaybedilenOyun:0,toplamDeneme:0,enAzDeneme:null,toplamSure:0,toplamKazanilanCoin:0,toplamHarcanenCoin:0,modSayac:{'2p':0,'ai_kolay':0,'ai_orta':0,'ai_zor':0,'multi':0},enUzunSure:0,enKisaSure:null,sonOynananMod:''};
+  try{const raw=localStorage.getItem('ng9_istatistik');if(!raw)return def;return Object.assign(def,JSON.parse(raw));}catch(e){return def;}
+}
+function istatistikKaydet(stat){try{localStorage.setItem('ng9_istatistik',JSON.stringify(stat));}catch(e){}}
+function istatistikGuncelle(kazandi,deneme,sure,mod){
+  const stat=istatistikYukle();
+  stat.toplamOyun++;if(kazandi)stat.kazanilanOyun++;else stat.kaybedilenOyun++;
+  stat.toplamDeneme+=deneme;if(stat.enAzDeneme===null||deneme<stat.enAzDeneme)stat.enAzDeneme=deneme;
+  stat.toplamSure+=sure;if(sure>stat.enUzunSure)stat.enUzunSure=sure;
+  if(stat.enKisaSure===null||(sure>0&&sure<stat.enKisaSure))stat.enKisaSure=sure;
+  stat.sonOynananMod=mod;
+  const modKey=mod==='2p'?'2p':mod==='ai'?('ai_'+(G.aiZorluk||'kolay')):mod==='multi'?'multi':'2p';
+  if(stat.modSayac[modKey]!==undefined)stat.modSayac[modKey]++;
+  istatistikKaydet(stat);
+}
+function istatistikCoinEkle(kazanilan,harcanan){
+  const stat=istatistikYukle();stat.toplamKazanilanCoin+=kazanilan;stat.toplamHarcanenCoin+=harcanan;istatistikKaydet(stat);
+}
+function istatistikSifirla(){
+  if(!confirm('Tüm istatistikler sıfırlanacak. Emin misin?'))return;
+  localStorage.removeItem('ng9_istatistik');renderIstatistik();gosterPopup('🗑️','Sıfırlandı','Tüm istatistikler temizlendi.','#ff6644');
+}
+function saniyeFormatla(s){if(!s||s<=0)return '0:00';const dk=Math.floor(s/60),sn=s%60;if(dk>=60){const sa=Math.floor(dk/60),gk=dk%60;return sa+'s '+gk+'dk';}return dk+'dk '+String(sn).padStart(2,'0')+'sn';}
+function renderIstatistik(){
+  const stat=istatistikYukle();
+  const oranYuzde=stat.toplamOyun>0?Math.round((stat.kazanilanOyun/stat.toplamOyun)*100):0;
+  const ortDeneme=stat.toplamOyun>0?(stat.toplamDeneme/stat.toplamOyun).toFixed(1):'—';
+  document.getElementById('stat-ozet-grid').innerHTML=`
+    <div class="stat-kart"><div class="stat-kart-icon">🎮</div><div class="stat-kart-val">${stat.toplamOyun}</div><div class="stat-kart-label">Toplam Oyun</div></div>
+    <div class="stat-kart"><div class="stat-kart-icon">🏆</div><div class="stat-kart-val" style="color:var(--win-color)">${stat.kazanilanOyun}</div><div class="stat-kart-label">Kazanılan</div></div>
+    <div class="stat-kart"><div class="stat-kart-icon">📊</div><div class="stat-kart-val" style="color:var(--coin-color)">${oranYuzde}%</div><div class="stat-kart-label">Kazanma Oranı</div></div>
+    <div class="stat-kart"><div class="stat-kart-icon">⏱️</div><div class="stat-kart-val" style="color:var(--accent);font-size:18px">${saniyeFormatla(stat.toplamSure)}</div><div class="stat-kart-label">Toplam Süre</div></div>`;
+  document.getElementById('stat-oyun-satirlar').innerHTML=`
+    <div class="stat-row"><div class="stat-row-label">📉 Kaybedilen Oyun</div><div class="stat-row-val" style="color:#ff4444">${stat.kaybedilenOyun}</div></div>
+    <div class="stat-row"><div class="stat-row-label">🎯 Ortalama Deneme</div><div class="stat-row-val">${ortDeneme}</div></div>
+    <div class="stat-row"><div class="stat-row-label">⚡ En Az Deneme (rekor)</div><div class="stat-row-val" style="color:var(--win-color)">${stat.enAzDeneme!==null?stat.enAzDeneme:'—'}</div></div>
+    <div class="stat-row"><div class="stat-row-label">🔢 Toplam Deneme</div><div class="stat-row-val">${stat.toplamDeneme}</div></div>
+    <div class="stat-row"><div class="stat-row-label">⏩ En Kısa Oyun</div><div class="stat-row-val" style="color:var(--win-color)">${stat.enKisaSure!==null?saniyeFormatla(stat.enKisaSure):'—'}</div></div>
+    <div class="stat-row"><div class="stat-row-label">🐢 En Uzun Oyun</div><div class="stat-row-val">${stat.enUzunSure>0?saniyeFormatla(stat.enUzunSure):'—'}</div></div>`;
+  document.getElementById('stat-para-satirlar').innerHTML=`
+    <div class="stat-row"><div class="stat-row-label">💰 Toplam Kazanılan Coin</div><div class="stat-row-val" style="color:var(--coin-color)">🪙 ${stat.toplamKazanilanCoin}</div></div>
+    <div class="stat-row"><div class="stat-row-label">🛒 Toplam Harcanan Coin</div><div class="stat-row-val" style="color:var(--market-color)">🪙 ${stat.toplamHarcanenCoin}</div></div>
+    <div class="stat-row"><div class="stat-row-label">🏦 Mevcut Bakiye</div><div class="stat-row-val" style="color:var(--coin-color)">🪙 ${coins}</div></div>
+    <div class="stat-row"><div class="stat-row-label">📈 Net Kazanç</div><div class="stat-row-val" style="color:${stat.toplamKazanilanCoin-stat.toplamHarcanenCoin>=0?'var(--win-color)':'#ff4444'}">🪙 ${stat.toplamKazanilanCoin-stat.toplamHarcanenCoin}</div></div>`;
+  document.getElementById('stat-skor-satirlar').innerHTML=`
+    <div class="stat-row"><div class="stat-row-label">🥇 En Az Denemede Kazanma</div><div class="stat-row-val" style="color:var(--win-color)">${stat.enAzDeneme!==null?stat.enAzDeneme+' deneme':'—'}</div></div>
+    <div class="stat-row"><div class="stat-row-label">⚡ En Hızlı Oyun</div><div class="stat-row-val" style="color:var(--win-color)">${stat.enKisaSure!==null?saniyeFormatla(stat.enKisaSure):'—'}</div></div>
+    <div class="stat-row"><div class="stat-row-label">🎮 Son Oynanan Mod</div><div class="stat-row-val" style="font-size:13px">${stat.sonOynananMod==='2p'?'👥 2 Kişilik':stat.sonOynananMod==='ai'?'🤖 AI':stat.sonOynananMod==='multi'?'🌐 Multiplayer':'—'}</div></div>`;
+  const toplamMod=Object.values(stat.modSayac).reduce((a,b)=>a+b,0)||1;
+  const modlar=[{key:'2p',label:'👥 2 Kişilik',val:stat.modSayac['2p']||0},{key:'ai_kolay',label:'🟢 AI Kolay',val:stat.modSayac['ai_kolay']||0},{key:'ai_orta',label:'🟡 AI Orta',val:stat.modSayac['ai_orta']||0},{key:'ai_zor',label:'🔴 AI Zor',val:stat.modSayac['ai_zor']||0},{key:'multi',label:'🌐 Multi',val:stat.modSayac['multi']||0}];
+  document.getElementById('stat-mod-dagilim').innerHTML=`<div class="stat-bar-title">OYNANAN MOD DAĞILIMI</div>`+modlar.map(m=>`<div class="stat-bar-row"><div class="stat-bar-key" style="font-size:11px">${m.label}</div><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:${Math.round((m.val/toplamMod)*100)}%"></div></div><div class="stat-bar-num">${m.val}</div></div>`).join('');
+}
+
+/* ================================================================
+   MARKET
+   ================================================================ */
+const MARKET_ITEMS = [
+  {id:'theme_purple',icon:'🟣',ad:'Mor Neon Tema',acik:'Tüm arayüz mora dönüşür',fiyat:60,tip:'tema',theme:'purple'},
+  {id:'theme_green', icon:'🟢',ad:'Yeşil Matrix Tema',acik:'Neon yeşil renk paleti',fiyat:60,tip:'tema',theme:'green'},
+  {id:'theme_red',   icon:'🔴',ad:'Kırmızı Ateş Tema',acik:'Tüm arayüz kızıl tona döner',fiyat:60,tip:'tema',theme:'red'},
+  {id:'theme_gold',  icon:'🟡',ad:'Altın Tema',acik:'Altın sarısı prestij teması',fiyat:100,tip:'tema',theme:'gold'},
+  {id:'gif_pack',    icon:'🎬',ad:'GIF Paketi',acik:'Chatte GIF gönderebilirsin (2 coin/GIF)',fiyat:80,tip:'özellik'},
+  {id:'font_mono',   icon:'🔤',ad:'Retro Font',acik:'Tüm arayüz için retro monospace font',fiyat:50,tip:'görünüm'},
+];
+function isSatinAlindi(id){return localStorage.getItem('ng9_market_'+id)==='1';}
+function isAktif(id){return localStorage.getItem('ng9_aktif_'+id)!=='0';}
+function hasGifPack(){return isSatinAlindi('gif_pack')&&isAktif('gif_pack');}
+function renderMarket(){
+  const grid=document.getElementById('market-grid');grid.innerHTML='';
+  const herhangi=MARKET_ITEMS.some(i=>isSatinAlindi(i.id));
+  const hint=document.getElementById('market-ind-hint');if(hint)hint.classList.toggle('show',herhangi);
+  MARKET_ITEMS.forEach(item=>{
+    const satindi=isSatinAlindi(item.id);
+    const div=document.createElement('div');div.className='market-item';
+    const icon=document.createElement('div');icon.className='market-item-icon';icon.textContent=item.icon;
+    const info=document.createElement('div');info.className='market-item-info';
+    const ad=document.createElement('div');ad.className='market-item-ad';ad.textContent=item.ad;
+    const acik=document.createElement('div');acik.className='market-item-acik';acik.textContent=item.acik;
+    const tip=document.createElement('div');tip.className='market-item-tip';tip.textContent='🎨 '+item.tip;
+    info.appendChild(ad);info.appendChild(acik);info.appendChild(tip);
+    if(satindi){const s=document.createElement('div');s.style.cssText='font-size:11px;color:#44aa66;margin-top:4px';s.textContent='✅ Satın Alındı';info.appendChild(s);}
+    const btn=document.createElement('button');
+    btn.className='market-btn'+(satindi?' satin-alindi':'');
+    btn.textContent=satindi?'✅':'🪙 '+item.fiyat;
+    btn.disabled=satindi;
+    btn.addEventListener('click',()=>marketSatinAl(item.id));
+    div.appendChild(icon);div.appendChild(info);div.appendChild(btn);
+    grid.appendChild(div);
+  });
+}
+function marketSatinAl(id){
+  if(isSatinAlindi(id))return;
+  const item=MARKET_ITEMS.find(i=>i.id===id);if(!item)return;
+  if(coins<item.fiyat){document.getElementById('popup-msg').textContent=`Bu kozmetik için ${item.fiyat} 🪙 gerekiyor. Şu an ${coins} 🪙 var.`;document.getElementById('coin-popup-overlay').classList.add('show');return;}
+  spendCoins(item.fiyat);istatistikCoinEkle(0,item.fiyat);
+  localStorage.setItem('ng9_market_'+id,'1');localStorage.setItem('ng9_aktif_'+id,'1');
+  applyAllMarketItems();renderMarket();updateIndirilenlerBadge();
+}
+function applyAllMarketItems(){
+  // Önce tüm tema sınıflarını temizle
+  document.body.classList.remove('theme-purple','theme-green','theme-red','theme-gold');
+  document.body.style.fontFamily='';
+  MARKET_ITEMS.forEach(item=>{
+    if(!isSatinAlindi(item.id)||!isAktif(item.id))return;
+    if(item.tip==='tema')document.body.classList.add('theme-'+item.theme);
+    if(item.id==='font_mono')document.body.style.fontFamily="'Menlo','Consolas',monospace";
+  });
+}
+function updateIndirilenlerBadge(){
+  const sayac=MARKET_ITEMS.filter(i=>isSatinAlindi(i.id)).length;
+  const badge=document.getElementById('ayarlar-badge');
+  const indBadge=document.getElementById('indirilenler-badge');
+  if(badge)badge.classList.toggle('show',sayac>0);
+  if(indBadge){indBadge.style.display=sayac>0?'flex':'none';if(sayac>0)indBadge.textContent=sayac;}
+}
+function renderIndirilenler(){
+  const grid=document.getElementById('indirilenler-grid');grid.innerHTML='';
+  const satinAlinanlar=MARKET_ITEMS.filter(i=>isSatinAlindi(i.id));
+  if(satinAlinanlar.length===0){grid.innerHTML=`<div class="ind-bos">${t('noDownloads')}</div>`;return;}
+  satinAlinanlar.forEach(item=>{
+    const aktif=isAktif(item.id);
+    const div=document.createElement('div');div.className='ind-item';
+    div.innerHTML=`<div class="ind-item-icon">${item.icon}</div><div class="ind-item-info"><div class="ind-item-ad">${item.ad}</div><div class="ind-item-tip">🎨 ${item.tip}</div></div><div class="toggle${aktif?' on':''}" onclick="toggleIndirilenItem('${item.id}',this)" style="flex-shrink:0"></div>`;
+    grid.appendChild(div);
+  });
+}
+function toggleIndirilenItem(id,togEl){
+  const yeni=!isAktif(id);localStorage.setItem('ng9_aktif_'+id,yeni?'1':'0');togEl.classList.toggle('on',yeni);
+  applyAllMarketItems();
+  const item=MARKET_ITEMS.find(i=>i.id===id);if(item)gosterPopup('🎨',item.ad,(yeni?'✅ '+t('activated'):'⏸️ '+t('deactivated')),yeni?'#44ee66':'#ff6644');
+}
+
+/* ================================================================
+   COINS
+   ================================================================ */
+let coins=0, sessionCoinsEarned=0, sessionCoinsSpent=0;
+function loadCoins(){const s=localStorage.getItem('ng9_coins');coins=s===null?20:(parseInt(s)||0);updateCoinUI();}
+function saveCoins(){localStorage.setItem('ng9_coins',coins);}
+function addCoins(n){coins+=n;sessionCoinsEarned+=n;saveCoins();updateCoinUI();showCoinPop(n);}
+function spendCoins(n){if(coins<n)return false;coins-=n;sessionCoinsSpent+=n;saveCoins();updateCoinUI();return true;}
+function updateCoinUI(){
+  ['menu-coins-val','topbar-coin-val'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=coins;});
+  const ac=document.getElementById('ayarlar-coins');if(ac)ac.textContent=coins+' 🪙';
+  const mc=document.getElementById('market-coins-val');if(mc)mc.textContent=coins;
+  const tb=document.getElementById('topbar-coins');if(tb)tb.style.display='flex';
+}
+let coinPopTO=null;
+function showCoinPop(n){const pop=document.getElementById('coin-pop');document.getElementById('coin-pop-val').textContent=n;pop.classList.add('show');if(coinPopTO)clearTimeout(coinPopTO);coinPopTO=setTimeout(()=>pop.classList.remove('show'),1600);}
+function kapatPopup(){document.getElementById('coin-popup-overlay').classList.remove('show');}
+function gosterPopup(icon,title,msg,titleColor='#aaa'){
+  document.getElementById('genel-popup-icon').textContent=icon;
+  document.getElementById('genel-popup-title').textContent=title;
+  document.getElementById('genel-popup-title').style.color=titleColor;
+  document.getElementById('genel-popup-msg').textContent=msg;
+  document.getElementById('genel-popup').classList.add('show');
+}
+
+/* ================================================================
+   PERF / FPS / TIMER / FULLSCREEN
+   ================================================================ */
+let fpsOn=false, fpsRaf=null, timerAyar=false, timerInterval=null, timerSaniye=0, perfMode='high';
+function perfDegistir(val){perfMode=val;localStorage.setItem('ng9_perf',val);document.body.classList.remove('perf-low','perf-mid');if(val==='low')document.body.classList.add('perf-low');if(val==='mid')document.body.classList.add('perf-mid');}
+function loadPerf(){const s=localStorage.getItem('ng9_perf')||'high';perfMode=s;const sel=document.getElementById('perf-select');if(sel)sel.value=s;perfDegistir(s);}
+function fpsDegistir(){fpsOn=!fpsOn;const tog=document.getElementById('fps-toggle'),badge=document.getElementById('fps-badge');if(fpsOn){tog.classList.add('on');badge.style.display='block';fpsLoop();}else{tog.classList.remove('on');badge.style.display='none';if(fpsRaf)cancelAnimationFrame(fpsRaf);}}
+function fpsLoop(){let tc=performance.now(),c=0;function f(n){c++;if(n-tc>=1000){document.getElementById('fps-badge').textContent=Math.round(c*1000/(n-tc))+' FPS';c=0;tc=n;}fpsRaf=requestAnimationFrame(f);}fpsRaf=requestAnimationFrame(f);}
+function timerAyarDegistir(){timerAyar=!timerAyar;document.getElementById('timer-toggle').classList.toggle('on',timerAyar);localStorage.setItem('ng9_timer',timerAyar?'1':'0');}
+function loadTimerAyar(){timerAyar=localStorage.getItem('ng9_timer')==='1';if(timerAyar)document.getElementById('timer-toggle').classList.add('on');}
+function timerBaslat(barId){timerDurdur();timerSaniye=0;const bar=document.getElementById(barId),valId=barId.replace('timer-bar-','timer-val-');if(!timerAyar){bar.classList.remove('aktif');return;}bar.classList.add('aktif');bar.classList.remove('uyari','tehlike');timerGuncelle(valId,bar);timerInterval=setInterval(()=>{timerSaniye++;timerGuncelle(valId,bar);},1000);}
+function timerGuncelle(valId,bar){const el=document.getElementById(valId),dk=Math.floor(timerSaniye/60),sn=timerSaniye%60;if(el)el.textContent=String(dk).padStart(2,'0')+':'+String(sn).padStart(2,'0');bar.classList.remove('uyari','tehlike');if(timerSaniye>=120)bar.classList.add('tehlike');else if(timerSaniye>=60)bar.classList.add('uyari');}
+function timerDurdur(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
+function timerSuresiAl(){return String(Math.floor(timerSaniye/60)).padStart(2,'0')+':'+String(timerSaniye%60).padStart(2,'0');}
+function tamEkranToggle(){if(!document.fullscreenElement&&!document.webkitFullscreenElement){const el=document.documentElement;if(el.requestFullscreen)el.requestFullscreen().catch(()=>{});else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();}else{if(document.exitFullscreen)document.exitFullscreen();else if(document.webkitExitFullscreen)document.webkitExitFullscreen();}}
+document.addEventListener('fullscreenchange',fsChange);document.addEventListener('webkitfullscreenchange',fsChange);
+function fsChange(){const btn=document.getElementById('fs-btn'),inFS=document.fullscreenElement||document.webkitFullscreenElement;btn.textContent=inFS?'✕':'⛶';}
+
+/* ================================================================
+   EKRAN GEÇİŞİ
+   ================================================================ */
+function git(id){
+  if(id==='market')renderMarket();
+  if(id==='indirilenler')renderIndirilenler();
+  if(id==='multiplayer')checkFirebaseWarning();
+  if(id==='istatistik')renderIstatistik();
+  const prev=document.querySelector('.screen.active');
+  if(prev){
+    prev.classList.remove('visible');
+    const delay = perfMode==='low' ? 50 : 120;
+    setTimeout(()=>{prev.classList.remove('active');acEkran(id);}, delay);
+  } else {
+    acEkran(id);
+  }
+}
+function acEkran(id){const el=document.getElementById(id);if(!el)return;el.classList.add('active');setTimeout(()=>el.classList.add('visible'),30);tumMetinleriGuncelle();}
+function checkFirebaseWarning(){
+  const w=document.getElementById('firebase-warning');
+  if(w)w.style.display=firebaseOk?'none':'block';
+  // Oda listesini yükle
+  odaListesiniYenile();
+  // Otomatik yenile (her 10 sn)
+  if(odaListeInterval) clearInterval(odaListeInterval);
+  odaListeInterval = setInterval(()=>{
+    const aktif = document.querySelector('.screen.active');
+    if(aktif && aktif.id === 'multiplayer') odaListesiniYenile();
+    else { clearInterval(odaListeInterval); odaListeInterval=null; }
+  }, 10000);
+}
+
+/* ================================================================
+   MULTIPLAYER — TAMAMEN YENİDEN YAZILDI
+   ================================================================ */
+
+// Geri sayım için değişkenler
+let msCountdownInterval = null;
+let msCountdownVal = 30;
+let msOtomatikBaslatTO = null;
+
+function randomOdaKodu(){return String(Math.floor(100000+Math.random()*900000));}
+
+/* multiTemizle: tüm state'i sıfırla, eski chat/dinleyicileri temizle */
+function multiTemizle(){
+  // Kurucu hâlâ bekleme ekranındaysa odayı sil
+  if(M.odaKodu && M.rolum==='kurucu' && !M.aktif && firebaseOk && db){
+    db.ref('odalar/'+M.odaKodu).remove().catch(()=>{});
+  }
+  // Firebase dinleyicileri kapat
+  if(M.odaRef)try{M.odaRef.off();}catch(e){}
+  if(M.chatRef)try{M.chatRef.off();}catch(e){}
+
+  // Countdown/otomatik başlatma temizle
+  if(msCountdownInterval){clearInterval(msCountdownInterval);msCountdownInterval=null;}
+  if(msOtomatikBaslatTO){clearTimeout(msOtomatikBaslatTO);msOtomatikBaslatTO=null;}
+
+  // Chat mesajlarını temizle
+  const chatMsgs=document.getElementById('chat-messages');
+  if(chatMsgs)chatMsgs.innerHTML='';
+
+  // Oda kodunu resetle
+  const disp=document.getElementById('oda-kodu-display');if(disp)disp.textContent='------';
+
+  // Oda kur durum alanlarını resetle
+  const kurD=document.getElementById('oda-kur-durum');
+  if(kurD){kurD.textContent=t('roomCreatePrompt');kurD.className='oda-durum bekliyor';}
+  const hazir=document.getElementById('oda-kur-hazir');if(hazir)hazir.style.display='none';
+  const kurBtn=document.getElementById('oda-kur-btn');if(kurBtn)kurBtn.disabled=false;
+
+  // Katıl alanlarını resetle
+  const katilD=document.getElementById('oda-katil-durum');if(katilD)katilD.style.display='none';
+  const katilI=document.getElementById('katil-input');if(katilI)katilI.value='';
+
+  // Multi-setup bekleme ekranını resetle
+  const msBekleme=document.getElementById('ms-bekleme');if(msBekleme)msBekleme.style.display='none';
+  const msInputWrap=document.getElementById('ms-input-wrap');if(msInputWrap)msInputWrap.style.display='flex';
+  const msEkran=document.getElementById('ms-ekran');if(msEkran)msEkran.textContent='----';
+  const msCountdownWrap=document.getElementById('ms-countdown-wrap');if(msCountdownWrap)msCountdownWrap.style.display='none';
+
+  // State sıfırla
+  M={aktif:false,odaKodu:'',rolum:'',benimSayim:'',rakibinSayim:'',girisim:'',benimDeneme:0,rakipDeneme:0,benimGecmis:[],rakipGecmis:[],bitti:false,odaRef:null,chatRef:null,benimHazir:false,rakipHazir:false};
+  msSG='';
+  msCountdownVal=30;
+  // Şifre alanlarını sıfırla
+  sifreAcik=false;
+  const sifreTog=document.getElementById('sifre-toggle');if(sifreTog)sifreTog.classList.remove('on');
+  const sifreInp=document.getElementById('sifre-input');if(sifreInp){sifreInp.style.display='none';sifreInp.value='';}
+  const sifreUy=document.getElementById('sifre-uyari');if(sifreUy)sifreUy.style.display='none';
+  const sifrePop=document.getElementById('sifre-popup');if(sifrePop)sifrePop.classList.remove('show');
+  bekleyenOdaKod='';bekleyenOdaData=null;
+  // Oda liste interval temizle
+  if(odaListeInterval){clearInterval(odaListeInterval);odaListeInterval=null;}
+}
+
+/* Firebase yardımcı fonksiyonlar */
+function fbYaz(path,data){if(firebaseOk&&db)return db.ref(path).set(data);try{localStorage.setItem('ng9_fb_'+path.replace(/\//g,'_'),JSON.stringify(data));}catch(e){}return Promise.resolve();}
+function fbGuncelle(path,data){if(firebaseOk&&db)return db.ref(path).update(data);try{const k='ng9_fb_'+path.replace(/\//g,'_');const m=JSON.parse(localStorage.getItem(k)||'{}');Object.assign(m,data);localStorage.setItem(k,JSON.stringify(m));}catch(e){}return Promise.resolve();}
+function fbPush(path,data){if(firebaseOk&&db)return db.ref(path).push(data);try{const k='ng9_fb_'+path.replace(/\//g,'_');const m=JSON.parse(localStorage.getItem(k)||'[]');if(!Array.isArray(m))return Promise.resolve();m.push(data);localStorage.setItem(k,JSON.stringify(m));}catch(e){}return Promise.resolve();}
+function fbDinle(path,cb){if(firebaseOk&&db){const ref=db.ref(path);ref.on('value',snap=>cb(snap.val()));return ref;}const key='ng9_fb_'+path.replace(/\//g,'_');let son=null;const iv=setInterval(()=>{try{const v=JSON.parse(localStorage.getItem(key)||'null');if(JSON.stringify(v)!==JSON.stringify(son)){son=v;cb(v);}}catch(e){}},600);return{off:()=>clearInterval(iv)};}
+function fbDinleChild(path,cb){if(firebaseOk&&db){const ref=db.ref(path);ref.on('child_added',snap=>cb(snap.val(),snap.key));return ref;}const key='ng9_fb_'+path.replace(/\//g,'_');let bilinen=[];const iv=setInterval(()=>{try{const v=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(v))v.forEach((item,idx)=>{if(!bilinen.includes(idx)){bilinen.push(idx);cb(item,idx);}});}catch(e){}},600);return{off:()=>clearInterval(iv)};}
+
+/* ================================================================
+   ŞİFRE UI FONKSİYONLARI
+   ================================================================ */
+let sifreAcik = false;
+let bekleyenOdaKod = '';
+let bekleyenOdaData = null;
+
+function sifreToggle(){
+  sifreAcik = !sifreAcik;
+  document.getElementById('sifre-toggle').classList.toggle('on', sifreAcik);
+  const inp = document.getElementById('sifre-input');
+  const uyari = document.getElementById('sifre-uyari');
+  inp.style.display = sifreAcik ? 'block' : 'none';
+  if(!sifreAcik){ inp.value=''; if(uyari)uyari.style.display='none'; }
+  else { setTimeout(()=>inp.focus(), 150); }
+}
+
+/* ============ ODA LİSTESİ ============ */
+let odaListeInterval = null;
+
+function odaListesiniYenile(){
+  const liste = document.getElementById('oda-listesi');
+  if(!liste) return;
+  liste.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:13px;padding:16px;">Yükleniyor...</div>';
+
+  if(firebaseOk && db){
+    db.ref('odalar').orderByChild('durum').equalTo('bekliyor').once('value', snap=>{
+      const odalar = snap.val();
+      renderOdaListesi(odalar);
+    }).catch(()=>{
+      liste.innerHTML = '<div style="text-align:center;color:#ff4444;font-size:12px;padding:12px;">❌ Bağlantı hatası</div>';
+    });
+  } else {
+    // localStorage fallback — tüm ng9_fb_odalar_ keylerini tara
+    const odalar = {};
+    for(let i=0;i<localStorage.length;i++){
+      const key=localStorage.key(i);
+      if(key&&key.startsWith('ng9_fb_odalar_')){
+        try{
+          const v=JSON.parse(localStorage.getItem(key));
+          if(v&&v.durum==='bekliyor'){
+            const kod=key.replace('ng9_fb_odalar_','');
+            odalar[kod]=v;
+          }
+        }catch(e){}
+      }
+    }
+    renderOdaListesi(Object.keys(odalar).length>0?odalar:null);
+  }
+}
+
+function renderOdaListesi(odalar){
+  const liste = document.getElementById('oda-listesi');
+  if(!liste) return;
+  if(!odalar || Object.keys(odalar).length === 0){
+    liste.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:13px;padding:16px;">🔍 Açık oda bulunamadı</div>';
+    return;
+  }
+  liste.innerHTML = '';
+  // Son 20 odayı göster, en yeni önce
+  const entries = Object.entries(odalar)
+    .filter(([k,v])=>v&&v.durum==='bekliyor')
+    .sort((a,b)=>(b[1].ts||0)-(a[1].ts||0))
+    .slice(0,20);
+
+  if(entries.length === 0){
+    liste.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:13px;padding:16px;">🔍 Açık oda bulunamadı</div>';
+    return;
+  }
+
+  entries.forEach(([kod, oda])=>{
+    const sifrelimi = oda.sifrelimi;
+    const gecenSure = oda.ts ? Math.floor((Date.now()-oda.ts)/1000) : 0;
+    // 30 dakikadan eski odayı sil ve listede gösterme
+    if(gecenSure > 30*60){
+      if(firebaseOk && db) db.ref('odalar/'+kod).remove();
+      return;
+    }
+    const sureLabel = gecenSure < 60 ? gecenSure+'sn önce' : Math.floor(gecenSure/60)+'dk önce';
+
+    const item = document.createElement('div');
+    item.className = 'oda-liste-item';
+    item.innerHTML = `
+      <div class="oda-liste-info">
+        <div class="oda-liste-kod">${kod}</div>
+        <div class="oda-liste-meta">${sureLabel}</div>
+      </div>
+      ${sifrelimi ? '<span class="oda-liste-sifre">🔒 Şifreli</span>' : ''}
+      <button class="oda-liste-btn" onclick="odaListedenKatil('${kod}')">Katıl →</button>
+    `;
+    liste.appendChild(item);
+  });
+}
+
+function odaListedenKatil(kod){
+  // Kodu input'a yaz ve katıl fonksiyonunu çağır
+  const inp = document.getElementById('katil-input');
+  if(inp) inp.value = kod;
+  odayaKatil();
+}
+
+function sifrePopupGoster(kod, oda){
+  bekleyenOdaKod = kod;
+  bekleyenOdaData = oda;
+  document.getElementById('popup-sifre-input').value = '';
+  document.getElementById('sifre-hata').style.display = 'none';
+  document.getElementById('sifre-popup').classList.add('show');
+  setTimeout(()=>document.getElementById('popup-sifre-input').focus(), 200);
+}
+function sifrePopupKapat(){
+  document.getElementById('sifre-popup').classList.remove('show');
+  bekleyenOdaKod = '';
+  bekleyenOdaData = null;
+  gosterDurum('oda-katil-durum','hata','❌ İptal edildi.');
+}
+function sifreDogrula(){
+  const girilen = document.getElementById('popup-sifre-input').value.trim();
+  if(!bekleyenOdaData) return;
+  if(bekleyenOdaData.sifre === girilen){
+    document.getElementById('sifre-popup').classList.remove('show');
+    _katilOdaya(bekleyenOdaKod, bekleyenOdaData);
+  } else {
+    document.getElementById('sifre-hata').style.display = 'block';
+    document.getElementById('popup-sifre-input').value = '';
+    document.getElementById('popup-sifre-input').focus();
+  }
+}
+
+/* Oda kurma */
+function odaKur(){
+  // Şifre toggle açıksa ama şifre boşsa engelle
+  if(sifreAcik){
+    const sifreVal = document.getElementById('sifre-input').value.trim();
+    const uyari = document.getElementById('sifre-uyari');
+    if(!sifreVal){
+      if(uyari) uyari.style.display='block';
+      document.getElementById('sifre-input').focus();
+      return;
+    }
+    if(uyari) uyari.style.display='none';
+  }
+
+  const kurBtn=document.getElementById('oda-kur-btn');
+  if(kurBtn)kurBtn.disabled=true;
+
+  const kod=randomOdaKodu();
+  M.odaKodu=kod;
+  M.rolum='kurucu';
+
+  // Şifre var mı?
+  const sifre = sifreAcik ? (document.getElementById('sifre-input').value.trim()) : '';
+
+  document.getElementById('oda-kodu-display').textContent=kod;
+  gosterDurum('oda-kur-durum','bekliyor','⏳ Oda hazırlanıyor...');
+  G.mod='multi'; oturumKaydet();
+  document.getElementById('oda-kur-hazir').style.display='flex';
+
+  fbYaz('odalar/'+kod,{
+    durum:'bekliyor',
+    sifre: sifre,          // boşsa şifresiz
+    sifrelimi: sifre!=='',
+    kurucu:{hazir:false,sayi:'',hamleHazir:false},
+    katilan:{hazir:false,sayi:'',hamleHazir:false},
+    kazanan:null,
+    ts:Date.now()
+  }).then(()=>{
+    const label = sifre ? '🔒 Şifreli oda — arkadaşın katılması bekleniyor...' : '⏳ Arkadaşın katılması bekleniyor...';
+    gosterDurum('oda-kur-durum','bekliyor', label);
+  });
+
+  // Oda değişikliklerini dinle
+  M.odaRef=fbDinle('odalar/'+kod,(oda)=>{
+    if(!oda)return;
+    // Katılan geldi mi? → direkt sayı giriş ekranına geç
+    if(!M.aktif && !M.benimSayim && (oda.durum==='katildi'||(oda.katilan&&oda.katilan.sayi))){
+      const kurD=document.getElementById('oda-kur-durum');
+      if(kurD&&!kurD.className.includes('hazir')){
+        kurD.textContent='✅ Arkadaş katıldı!';
+        kurD.className='oda-durum hazir';
+      }
+      if(oda.katilan&&oda.katilan.sayi&&!M.rakibinSayim) M.rakibinSayim=oda.katilan.sayi;
+      setTimeout(()=>multiSayiGirisineGec(), 600);
+    }
+    _multiOrtakListener(oda, oda.katilan, oda.kurucu);
+  });
+}
+
+/* Odaya katılma */
+function odayaKatil(){
+  const kod=document.getElementById('katil-input').value.trim();
+  if(kod.length!==6){gosterDurum('oda-katil-durum','hata',t('enterCode6'));return;}
+  gosterDurum('oda-katil-durum','bekliyor',t('searching'));
+  document.getElementById('oda-katil-durum').style.display='block';
+
+  if(firebaseOk&&db){
+    db.ref('odalar/'+kod).once('value',snap=>{
+      const oda=snap.val();
+      if(!oda){gosterDurum('oda-katil-durum','hata',t('roomNotFound'));return;}
+      // Şifreli mi?
+      if(oda.sifrelimi && oda.sifre){
+        sifrePopupGoster(kod, oda);
+      } else {
+        _katilOdaya(kod,oda);
+      }
+    }).catch(()=>gosterDurum('oda-katil-durum','hata',t('connError')));
+  } else {
+    try{
+      const raw=localStorage.getItem('ng9_fb_odalar_'+kod);
+      const oda=raw?JSON.parse(raw):null;
+      if(!oda){gosterDurum('oda-katil-durum','hata',t('roomNotFound'));return;}
+      if(oda.sifrelimi && oda.sifre){
+        sifrePopupGoster(kod, oda);
+      } else {
+        _katilOdaya(kod,oda);
+      }
+    }catch(e){gosterDurum('oda-katil-durum','hata',t('connError'));}
+  }
+}
+
+function _katilOdaya(kod,oda){
+  M.odaKodu=kod;
+  M.rolum='katilan';
+
+  fbGuncelle('odalar/'+kod,{durum:'katildi'});
+
+  // Kurucunun sayısı varsa al
+  if(oda.kurucu&&oda.kurucu.sayi)M.rakibinSayim=oda.kurucu.sayi;
+
+  gosterDurum('oda-katil-durum','hazir',t('roomFound'));
+
+  // Firebase dinle
+  M.odaRef=fbDinle('odalar/'+kod,(o)=>{
+    if(!o)return;
+    _multiOrtakListener(o, o.kurucu, o.katilan);
+  });
+
+  setTimeout(()=>multiSayiGirisineGec(),600);
+}
+
+function gosterDurum(elemId,tip,msg){const el=document.getElementById(elemId);if(!el)return;el.style.display='block';el.className='oda-durum '+tip;el.textContent=msg;}
+
+/* Kurucunun "Başla" butonu: sayı giriş ekranına git */
+function multiOyuncuHazir(){multiSayiGirisineGec();}
+
+/* Sayı giriş ekranı */
+function multiSayiGirisineGec(){
+  document.getElementById('ms-title').textContent=t('enterSecret');
+  document.getElementById('ms-sub').textContent=t('enterSecretSub');
+  document.getElementById('ms-bekleme').style.display='none';
+  document.getElementById('ms-input-wrap').style.display='flex';
+  document.getElementById('ms-ekran').textContent='----';
+  msSG='';
+  git('multi-setup');
+}
+
+let msSG='';
+function msT(k){
+  let g=msSG;
+  if(k==='Sil'){msSG=g.slice(0,-1);}
+  else if(k==='OK'){if(g.length===4)multiSayimiKaydet(g);return;}
+  else{if(g.length<4&&!g.includes(k))msSG=g+k;}
+  document.getElementById('ms-ekran').textContent=msSG||'----';
+}
+
+/* Sayı kaydedildi → Hazırım bekleme ekranı */
+function multiSayimiKaydet(sayi){
+  M.benimSayim=sayi;
+
+  // Input ekranını gizle, bekleme ekranını göster
+  document.getElementById('ms-input-wrap').style.display='none';
+  document.getElementById('ms-bekleme').style.display='flex';
+
+  // Sayıyı Firebase'e yaz (hamleHazir=false henüz)
+  const guncelleme={};
+  guncelleme[M.rolum+'/sayi']=sayi;
+  guncelleme[M.rolum+'/hazir']=true;
+  guncelleme[M.rolum+'/hamleHazir']=false;
+  fbGuncelle('odalar/'+M.odaKodu,guncelleme);
+  oturumKaydet();
+
+  // Rakibin sayısı zaten var mı? → countdown başlat
+  _msKontrolEt();
+}
+
+/* Hazırım butonuna basıldı */
+function msHazirBasildi(){
+  M.benimHazir=true;
+  const btn=document.getElementById('ms-hazir-btn');
+  if(btn){btn.disabled=true;btn.textContent='✅ Hazır!';}
+
+  // Firebase'e hamleHazir=true yaz
+  const guncelleme={};
+  guncelleme[M.rolum+'/hamleHazir']=true;
+  fbGuncelle('odalar/'+M.odaKodu,guncelleme);
+
+  // Rakip zaten hazırsa direkt başlat
+  if(M.rakipHazir){
+    _baslat();
+    return;
+  }
+
+  // Aksi halde 30 saniyelik geri sayım başlat
+  _msCountdownBaslat();
+}
+
+/* Durum kontrolü: rakibin sayısı var mı? */
+function _msKontrolEt(){
+  if(M.rakibinSayim){
+    // Rakip de sayısını girmiş, countdown başlat
+    const countdownWrap=document.getElementById('ms-countdown-wrap');
+    if(countdownWrap)countdownWrap.style.display='block';
+  }
+}
+
+/* 30 saniye geri sayım */
+function _msCountdownBaslat(){
+  if(msCountdownInterval)return; // Zaten çalışıyor
+  msCountdownVal=30;
+
+  const countdownWrap=document.getElementById('ms-countdown-wrap');
+  const countdownEl=document.getElementById('ms-countdown');
+  if(countdownWrap)countdownWrap.style.display='block';
+  if(countdownEl)countdownEl.textContent=msCountdownVal;
+
+  msCountdownInterval=setInterval(()=>{
+    msCountdownVal--;
+    if(countdownEl)countdownEl.textContent=msCountdownVal;
+    if(msCountdownVal<=0){
+      clearInterval(msCountdownInterval);msCountdownInterval=null;
+      // 30 saniye doldu, zorla başlat
+      if(!M.aktif&&M.benimSayim){
+        // Rakibin sayısı yoksa rastgele bir sayı kullan
+        if(!M.rakibinSayim){
+          const all=tumAdaylar();
+          M.rakibinSayim=all[Math.floor(Math.random()*all.length)];
+        }
+        // hamleHazir=true yaz ve başlat
+        const g={};g[M.rolum+'/hamleHazir']=true;
+        fbGuncelle('odalar/'+M.odaKodu,g);
+        setTimeout(()=>multiOyunuBaslat(),300);
+      }
+    }
+  },1000);
+}
+
+/* İki oyuncu da hazır olunca çağrılır */
+function _baslat(){
+  if(M.aktif)return;
+  if(msCountdownInterval){clearInterval(msCountdownInterval);msCountdownInterval=null;}
+  multiOyunuBaslat();
+}
+
+/* Oyunu başlat */
+function multiOyunuBaslat(){
+  if(M.aktif)return;
+  M.aktif=true;M.bitti=false;M.benimDeneme=0;M.rakipDeneme=0;M.benimGecmis=[];M.rakipGecmis=[];M.girisim='';
+  sessionCoinsEarned=0;sessionCoinsSpent=0;
+
+  ['mp1-gec','mp2-gec'].forEach(id=>document.getElementById(id).innerHTML='');
+  ['mp1-ekran','mp2-ekran'].forEach(id=>document.getElementById(id).textContent='----');
+  ['mp1-den','mp2-den'].forEach(id=>document.getElementById(id).textContent='0 '+t('triesLabel2'));
+  document.getElementById('multi-mesaj-bar').textContent='🎮 Oynuyorsunuz!';
+  document.getElementById('mp1-head').textContent=t('you');
+  document.getElementById('mp2-head').textContent=t('opponent');
+
+  git('multi-oyun');
+  G.mod='multi';
+  oturumKaydet();
+  setTimeout(()=>{timerBaslat('timer-bar-multi');chatBaslat();},400);
+}
+
+function multiRakipHamleGoster(hamle){
+  if(!hamle||M.rakipDeneme>=hamle.sira)return;
+  M.rakipDeneme=hamle.sira;
+  gecmiseEkle('mp2-gec',hamle.sayi,M.benimSayim);
+  const{dogru}=hesapla(hamle.sayi,M.benimSayim);
+  document.getElementById('mp2-den').textContent=M.rakipDeneme+' '+t('triesLabel2');
+  document.getElementById('mp2-ekran').textContent=hamle.sayi;
+  setTimeout(()=>{const e=document.getElementById('mp2-ekran');if(e.textContent===hamle.sayi)e.textContent='----';},1200);
+  if(dogru===4&&!M.bitti)kaydetKazanan('rakip');
+}
+
+function moT(k){
+  if(M.bitti)return;let g=M.girisim;
+  if(k==='Sil'){g=g.slice(0,-1);}
+  else if(k==='OK'){if(g.length===4)multiTahmin(g);return;}
+  else{if(g.length<4&&!g.includes(k))g=g+k;}
+  M.girisim=g;document.getElementById('mp1-ekran').textContent=g||'----';
+}
+
+function multiTahmin(tahminVal){
+  addCoins(1);M.benimDeneme++;M.girisim='';
+  document.getElementById('mp1-ekran').textContent='----';
+  document.getElementById('mp1-den').textContent=M.benimDeneme+' '+t('triesLabel2');
+  gecmiseEkle('mp1-gec',tahminVal,M.rakibinSayim);
+  const{dogru,yanlis}=hesapla(tahminVal,M.rakibinSayim);
+  M.benimGecmis.push({tahmin:tahminVal,dogru,yanlis,sira:M.benimDeneme});
+  const guncelleme={};
+  guncelleme[M.rolum+'/hamle']={sayi:tahminVal,dogru,yanlis,sira:M.benimDeneme};
+  fbGuncelle('odalar/'+M.odaKodu,guncelleme);
+  if(dogru===4)kaydetKazanan('ben');
+}
+
+function kaydetKazanan(kim){
+  if(M.bitti)return;M.bitti=true;
+  fbGuncelle('odalar/'+M.odaKodu,{kazanan:kim});
+  multiOyunBitti(kim);
+}
+
+function multiOyunBitti(kazanan){
+  if(!M.aktif&&!M.bitti)return;
+  M.aktif=false;M.bitti=true;timerDurdur();
+  if(M.odaRef)try{M.odaRef.off();}catch(e){}
+  const sure=timerSuresiAl();const benKazandim=kazanan==='ben';
+  istatistikGuncelle(benKazandim,M.benimDeneme,timerSaniye,'multi');
+  istatistikCoinEkle(sessionCoinsEarned,sessionCoinsSpent);
+  if(benKazandim){
+    coinWinBonus();
+    document.getElementById('kaz-title').textContent=t('youWon');
+    document.getElementById('kaz-title').style.color='var(--win-color)';
+    document.getElementById('kaz-sub').textContent=M.benimDeneme+' '+t('triesIn')+' '+M.rakibinSayim+' '+t('found');
+  } else {
+    document.getElementById('kaz-title').textContent=t('opponentWon');
+    document.getElementById('kaz-title').style.color='var(--ai-color)';
+    document.getElementById('kaz-sub').textContent=t('aiFoundIn')+' '+M.rakipDeneme+' '+t('triesLabel')+' '+M.benimDeneme+' '+t('triesLabel');
+  }
+  const sureEl=document.getElementById('kaz-sure');
+  if(timerAyar){sureEl.textContent=t('timeLabel')+' '+sure;sureEl.style.display='block';}else sureEl.style.display='none';
+  const wrap=document.getElementById('kaz-gecmis-wrap');wrap.innerHTML='';
+  const p1p=document.createElement('div');p1p.className='kaz-gecmis-panel';
+  p1p.innerHTML=`<div class="kaz-gecmis-baslik" style="color:var(--p1-color)">${t('you')}</div><div class="kaz-gecmis-liste" id="kz-m1"></div>`;
+  const p2p=document.createElement('div');p2p.className='kaz-gecmis-panel';
+  p2p.innerHTML=`<div class="kaz-gecmis-baslik" style="color:var(--p2-color)">${t('opponent')}</div><div class="kaz-gecmis-liste" id="kz-m2"></div>`;
+  wrap.appendChild(p1p);wrap.appendChild(p2p);
+  doldurKazandiListe('kz-m1',M.benimGecmis,M.rakibinSayim);
+  doldurKazandiListe('kz-m2',M.rakipGecmis,M.benimSayim);
+  // Gizli sayıları göster
+  kazandiSayilariGoster([
+    {label:t('you')+' sayısı',sayi:M.benimSayim,renk:'var(--p1-color)'},
+    {label:t('opponent')+' sayısı',sayi:M.rakibinSayim,renk:'var(--p2-color)'}
+  ]);
+  const ce=document.getElementById('kaz-coins-earned');
+  document.getElementById('kaz-coins-val').textContent=sessionCoinsEarned;
+  ce.style.display=benKazandim?'inline-flex':'none';
+  G.mod='multi';
+  setTimeout(()=>git('kazandi'),500);
+}
+
+function kopyalaKod(){
+  const kod=M.odaKodu;if(!kod||kod==='------')return;
+  if(navigator.clipboard){navigator.clipboard.writeText(kod).then(()=>gosterPopup('📋',t('copied'),t('codeCopied')+' '+kod,'#44ee66'));}
+  else{const el=document.createElement('textarea');el.value=kod;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);gosterPopup('📋',t('copied'),t('codeCopied')+' '+kod,'#44ee66');}
+}
+
+/* ================================================================
+   CHAT SİSTEMİ — SCROLL DÜZELTMESİ
+   ================================================================ */
+let chatCollapsed=false;
+
+function chatBaslat(){
+  if(!M.odaKodu)return;
+  // Chat mesajlarını temizle (önceki oturumdan kalanlar)
+  const chatContainer=document.getElementById('chat-messages');
+  if(chatContainer)chatContainer.innerHTML='';
+
+  addChatMsg({tip:'sys',metin:t('chatConnected')},false);
+  if(M.chatRef)try{M.chatRef.off();}catch(e){}
+
+  M.chatRef=fbDinleChild('chat/'+M.odaKodu,(msg)=>{
+    if(msg&&msg.rol!==M.rolum)addChatMsg({tip:'theirs',metin:msg.metin,gif:msg.gif||null},true);
+  });
+}
+
+function toggleChat(){
+  chatCollapsed=!chatCollapsed;
+  const panel=document.getElementById('chat-panel');
+  const btn=panel.querySelector('.chat-toggle-btn');
+  panel.classList.toggle('collapsed',chatCollapsed);
+  btn.textContent=chatCollapsed?'▶':'◀';
+}
+
+function sendChat(){
+  const input=document.getElementById('chat-input');
+  const text=(input.value||'').trim();
+  if(!text||!M.odaKodu)return;
+  input.value='';
+  addChatMsg({tip:'mine',metin:text},true);
+  fbPush('chat/'+M.odaKodu,{rol:M.rolum,metin:text,ts:Date.now()});
+}
+
+/* addChatMsg — mesajlar aşağıdan yukarı birikir, alan kaymaZ */
+function addChatMsg(msg,scroll=true){
+  const container=document.getElementById('chat-messages');
+  if(!container)return;
+
+  // justify-content:flex-end ile az mesajda altta durur;
+  // çok mesajda overflow başlayınca scroll açılır — alan kaymaZ.
+  const div=document.createElement('div');
+  div.className='chat-msg '+(msg.tip||'sys');
+  if(msg.gif){
+    const img=document.createElement('img');
+    img.className='chat-gif';img.src=msg.gif;img.loading='lazy';
+    div.appendChild(img);
+  } else {
+    div.textContent=msg.metin||'';
+  }
+  container.appendChild(div);
+  // Her zaman en alta scroll yap
+  requestAnimationFrame(() => { container.scrollTop = container.scrollHeight; });
+}
+
+/* GIF */
+let gifPickerAcik=false;
+const DEMO_GIFS=[
+  {url:'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHVwNzZ2NmthM3lvM2g1NzBjb2s2Z3ZndXJhejd4MzVkM2E5aXlpbyZlcD12MV9pbnRlcm5hbGdfZ2lmX2J5X2lkJmN0PWc/3o7abKhOpu0NwenH3O/giphy.gif'},
+  {url:'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3YwY3B2NW9tMGw2N2p6dGVia3M5d3J2OHBueGhtbGdwM3Rza2pkYiZlcD12MV9pbnRlcm5hbGdfZ2lmX2J5X2lkJmN0PWc/l0MYt5jPR6QX5pnqM/giphy.gif'},
+  {url:'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXBzYXNwOGVscWN4eDY1bHo5bXZhdzgwNDB0cXRxd3RxY3B5a2gzbyZlcD12MV9pbnRlcm5hbGdfZ2lmX2J5X2lkJmN0PWc/26BRuo6sLetdllPAQ/giphy.gif'},
+  {url:'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjkxaGoyaWp4bTY0Z2x3dDZkd3NkdXhhNWlveGdxZGM2MXhkaWN6ZiZlcD12MV9pbnRlcm5hbGdfZ2lmX2J5X2lkJmN0PWc/xT9IgG50Lg7russbDa/giphy.gif'},
+  {url:'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzJqaHVtbGpudzNibHR1ZzgxN3Z6OW12c3Z4ZWE2b3Z6dXgxbzlxdCZlcD12MV9pbnRlcm5hbGdfZ2lmX2J5X2lkJmN0PWc/3ohzdIuqJoo8QdKlnW/giphy.gif'},
+  {url:'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXdmbDVrMWV6ZHJ0amltcGZrY29wanB4dHllNWxvNGVsMnNoMjQ3YyZlcD12MV9pbnRlcm5hbGdfZ2lmX2J5X2lkJmN0PWc/d3mlE7uhX8KFgEmY/giphy.gif'},
+];
+function toggleGifPicker(){
+  if(!hasGifPack()){gosterPopup('🎬','GIF Paketi','GIF göndermek için marketten "GIF Paketi" satın al! (80 🪙)','#ffc700');return;}
+  gifPickerAcik=!gifPickerAcik;
+  const picker=document.getElementById('gif-picker');
+  picker.style.display=gifPickerAcik?'block':'none';
+  if(gifPickerAcik)renderGifGrid(DEMO_GIFS.map(g=>g.url));
+}
+function searchGifs(){renderGifGrid(DEMO_GIFS.slice(0,4).map(g=>g.url));}
+function renderGifGrid(urls){
+  const grid=document.getElementById('gif-grid');grid.innerHTML='';
+  urls.forEach(url=>{const item=document.createElement('div');item.className='gif-item';item.innerHTML=`<img src="${url}" loading="lazy">`;item.onclick=()=>sendGif(url);grid.appendChild(item);});
+}
+function sendGif(url){
+  if(!hasGifPack())return;
+  if(coins<2){gosterPopup('🪙',t('insufficientCoins'),t('notEnoughForGif'),'#ff4444');return;}
+  spendCoins(2);istatistikCoinEkle(0,2);
+  addChatMsg({tip:'mine',gif:url},true);
+  fbPush('chat/'+M.odaKodu,{rol:M.rolum,gif:url,ts:Date.now()});
+  gifPickerAcik=false;document.getElementById('gif-picker').style.display='none';
+  gosterPopup('🎬',t('gifSent'),'','#44ee66');
+}
+document.addEventListener('click',(e)=>{
+  if(gifPickerAcik&&!e.target.closest('.gif-picker')&&!e.target.closest('.chat-gif-btn')){
+    gifPickerAcik=false;const p=document.getElementById('gif-picker');if(p)p.style.display='none';
+  }
+});
+
+/* ================================================================
+   2 KİŞİLİK
+   ================================================================ */
+function setupGeri(){
+  if(G.step===2){G.step=1;G.sg='';G.p1='';document.getElementById('s-title').textContent=t('p1Enter');document.getElementById('s-ekran').textContent='----';}
+  else{G.step=1;G.sg='';G.p1='';G.p2='';git('mod-sec');}
+}
+function sT(k){
+  let g=G.sg;
+  if(k==='Sil'){G.sg=g.slice(0,-1);}
+  else if(k==='OK'){
+    if(g.length===4){
+      if(G.step===1){G.p1=g;G.sg='';G.step=2;document.getElementById('s-title').textContent='2. Oyuncu — Sayını Gir';document.getElementById('s-ekran').textContent='----';}
+      else{G.p2=g;G.sg='';G.step=1;G.mod='2p';basla2p();}
+    }return;
+  } else{if(g.length<4&&!g.includes(k))G.sg=g+k;}
+  document.getElementById('s-ekran').textContent=G.sg||'----';
+}
+function basla2p(){
+  G.sira=1;G.g1='';G.g2='';G.d1=0;G.d2=0;G.bitti=false;G.p1History=[];G.p2History=[];
+  sessionCoinsEarned=0;sessionCoinsSpent=0;
+  ['p1-gec','p2-gec'].forEach(id=>document.getElementById(id).innerHTML='');
+  ['p1-ekran','p2-ekran'].forEach(id=>document.getElementById(id).textContent='----');
+  ['p1-den','p2-den'].forEach(id=>document.getElementById(id).textContent='0 '+t('triesLabel2'));
+  turAyarla();git('oyun');setTimeout(()=>timerBaslat('timer-bar-2p'),400);
+}
+function turAyarla(){
+  const mb=document.getElementById('mesaj-bar'),p1e=document.getElementById('p1-ekran'),p2e=document.getElementById('p2-ekran');
+  const p1k=document.getElementById('p1-pad').querySelectorAll('.mkey');
+  const p2k=document.getElementById('p2-pad').querySelectorAll('.mkey');
+  if(G.sira===1){mb.textContent=t('player1')+' — tahmin gir';mb.style.color='var(--p1-color)';p1e.classList.add('aktif');p2e.classList.remove('aktif');p1k.forEach(b=>b.classList.remove('off'));p2k.forEach(b=>b.classList.add('off'));}
+  else{mb.textContent=t('player2')+' — tahmin gir';mb.style.color='var(--p2-color)';p2e.classList.add('aktif');p1e.classList.remove('aktif');p2k.forEach(b=>b.classList.remove('off'));p1k.forEach(b=>b.classList.add('off'));}
+}
+function oT(p,k){
+  if(G.bitti||G.sira!==p)return;
+  let g=p===1?G.g1:G.g2;
+  if(k==='Sil'){g=g.slice(0,-1);}
+  else if(k==='OK'){if(g.length===4)tahmin2p(p,g);return;}
+  else{if(g.length<4&&!g.includes(k))g=g+k;}
+  if(p===1)G.g1=g;else G.g2=g;
+  document.getElementById('p'+p+'-ekran').textContent=g||'----';
+}
+function tahmin2p(p,tahminVal){
+  addCoins(1);const hedef=p===1?G.p2:G.p1;
+  gecmiseEkle('p'+p+'-gec',tahminVal,hedef);
+  const{dogru,yanlis}=hesapla(tahminVal,hedef);
+  if(p===1){G.p1History.push({tahmin:tahminVal,dogru,yanlis});G.d1++;G.g1='';document.getElementById('p1-den').textContent=G.d1+' '+t('triesLabel2');}
+  else{G.p2History.push({tahmin:tahminVal,dogru,yanlis});G.d2++;G.g2='';document.getElementById('p2-den').textContent=G.d2+' '+t('triesLabel2');}
+  document.getElementById('p'+p+'-ekran').textContent='----';
+  if(dogru===4){
+    G.bitti=true;timerDurdur();
+    const sure=timerSuresiAl();const kazanan_deneme=p===1?G.d1:G.d2;
+    coinWinBonus();
+    istatistikGuncelle(true,kazanan_deneme,timerSaniye,'2p');
+    istatistikCoinEkle(sessionCoinsEarned,sessionCoinsSpent);
+    document.getElementById('kaz-title').textContent=p===1?t('p1Won'):t('p2Won');
+    document.getElementById('kaz-title').style.color=p===1?'var(--p1-color)':'var(--p2-color)';
+    document.getElementById('kaz-sub').textContent=(p===1?G.d1:G.d2)+' '+t('triesIn')+' '+(p===1?G.p2:G.p1)+' '+t('found');
+    const sureEl=document.getElementById('kaz-sure');if(timerAyar){sureEl.textContent=t('timeLabel')+' '+sure;sureEl.style.display='block';}else sureEl.style.display='none';
+    const wrap=document.getElementById('kaz-gecmis-wrap');wrap.innerHTML='';
+    const pp1=document.createElement('div');pp1.className='kaz-gecmis-panel';pp1.innerHTML=`<div class="kaz-gecmis-baslik" style="color:var(--p1-color)">${t('player1')}</div><div class="kaz-gecmis-liste" id="kz-p1"></div>`;
+    const pp2=document.createElement('div');pp2.className='kaz-gecmis-panel';pp2.innerHTML=`<div class="kaz-gecmis-baslik" style="color:var(--p2-color)">${t('player2')}</div><div class="kaz-gecmis-liste" id="kz-p2"></div>`;
+    wrap.appendChild(pp1);wrap.appendChild(pp2);
+    doldurKazandiListe('kz-p1',G.p1History,G.p2);doldurKazandiListe('kz-p2',G.p2History,G.p1);
+    const ce=document.getElementById('kaz-coins-earned');document.getElementById('kaz-coins-val').textContent=sessionCoinsEarned;ce.style.display='inline-flex';
+    // Gizli sayıları göster
+    kazandiSayilariGoster([
+      {label:t('player1')+' sayısı',sayi:G.p1,renk:'var(--p1-color)'},
+      {label:t('player2')+' sayısı',sayi:G.p2,renk:'var(--p2-color)'}
+    ]);
+    setTimeout(()=>git('kazandi'),400);return;
+  }
+  G.sira=p===1?2:1;turAyarla();
+}
+
+/* ================================================================
+   AI MODU
+   ================================================================ */
+function aiBaslat(z){G.aiZorluk=z;G.sg='';document.getElementById('ai-ekran').textContent='----';git('ai-setup');}
+function aiST(k){
+  let g=G.sg;
+  if(k==='Sil'){G.sg=g.slice(0,-1);}
+  else if(k==='OK'){if(g.length===4){G.aiSayim=g;G.sg='';G.mod='ai';baslaAi();}return;}
+  else{if(g.length<4&&!g.includes(k))G.sg=g+k;}
+  document.getElementById('ai-ekran').textContent=G.sg||'----';
+}
+function tumAdaylar(){const l=[];for(let i=1000;i<=9999;i++){const s=String(i);if(new Set(s).size===4)l.push(s);}return l;}
+function baslaAi(){
+  const all=tumAdaylar();G.aiHedef=all[Math.floor(Math.random()*all.length)];G.aiAday=[...all];
+  G.aiOyGirisi='';G.aiOyDeneme=0;G.p1AiDeneme=0;G.aiBitti=false;G.aiP1History=[];G.aiP2History=[];
+  sessionCoinsEarned=0;sessionCoinsSpent=0;
+  ['ap1-gec','ap2-gec'].forEach(id=>document.getElementById(id).innerHTML='');
+  ['ap1-ekran','ap2-ekran'].forEach(id=>document.getElementById(id).textContent='----');
+  ['ap1-den','ap2-den'].forEach(id=>document.getElementById(id).textContent='0 '+t('triesLabel2'));
+  document.getElementById('ai-mesaj-bar').textContent=t('yourTurn');document.getElementById('ai-mesaj-bar').style.color='var(--p1-color)';
+  document.getElementById('ai-dusunuyor').style.display='none';
+  document.getElementById('ap1-pad').querySelectorAll('.mkey').forEach(b=>b.classList.remove('off'));
+  const zMap={kolay:'🟢 Kolay',orta:'🟡 Orta',zor:'🔴 Zor'};
+  document.getElementById('ai-panel-head').textContent='🤖 AI — '+zMap[G.aiZorluk];
+  git('ai-oyun');setTimeout(()=>timerBaslat('timer-bar-ai'),400);
+}
+function aoT(k){
+  if(G.aiBitti)return;let g=G.aiOyGirisi;
+  if(k==='Sil'){g=g.slice(0,-1);}
+  else if(k==='OK'){if(g.length===4)oyuncuTahminAi(g);return;}
+  else{if(g.length<4&&!g.includes(k))g=g+k;}
+  G.aiOyGirisi=g;document.getElementById('ap1-ekran').textContent=g||'----';
+}
+function oyuncuTahminAi(tahminVal){
+  addCoins(1);G.p1AiDeneme++;G.aiOyGirisi='';
+  document.getElementById('ap1-ekran').textContent='----';
+  document.getElementById('ap1-den').textContent=G.p1AiDeneme+' '+t('triesLabel2');
+  gecmiseEkle('ap1-gec',tahminVal,G.aiHedef);
+  const{dogru,yanlis}=hesapla(tahminVal,G.aiHedef);G.aiP1History.push({tahmin:tahminVal,dogru,yanlis});
+  if(dogru===4){
+    G.aiBitti=true;timerDurdur();coinWinBonus();
+    const sure=timerSuresiAl();
+    istatistikGuncelle(true,G.p1AiDeneme,timerSaniye,'ai');
+    istatistikCoinEkle(sessionCoinsEarned,sessionCoinsSpent);
+    document.getElementById('kaz-title').textContent=t('youWon');document.getElementById('kaz-title').style.color='var(--win-color)';
+    document.getElementById('kaz-sub').textContent=G.p1AiDeneme+' '+t('triesIn')+' '+G.aiHedef+' '+t('found');
+    const sureEl=document.getElementById('kaz-sure');if(timerAyar){sureEl.textContent=t('timeLabel')+' '+sure;sureEl.style.display='block';}else sureEl.style.display='none';
+    hazirlaKazandiAi('sen');
+    // Gizli sayıları göster
+    kazandiSayilariGoster([
+      {label:'Senin sayın (AI buldu)',sayi:G.aiSayim,renk:'var(--p1-color)'},
+      {label:'AI\'nın sayısı',sayi:G.aiHedef,renk:'var(--ai-color)'}
+    ]);
+    setTimeout(()=>git('kazandi'),400);return;
+  }
+  document.getElementById('ai-mesaj-bar').textContent=t('thinking');document.getElementById('ai-mesaj-bar').style.color='var(--ai-color)';
+  document.getElementById('ai-dusunuyor').style.display='block';
+  document.getElementById('ap1-pad').querySelectorAll('.mkey').forEach(b=>b.classList.add('off'));
+  const delays={kolay:1600,orta:950,zor:550};setTimeout(aiTahminYap,delays[G.aiZorluk]);
+}
+function aiTahminYap(){
+  if(G.aiBitti)return;
+  let tahminVal;
+  if(G.aiZorluk==='kolay')tahminVal=G.aiAday[Math.floor(Math.random()*G.aiAday.length)];
+  else if(G.aiZorluk==='orta')tahminVal=G.aiAday[Math.floor(Math.random()*Math.min(8,G.aiAday.length))];
+  else tahminVal=aiEnIyiTahmin();
+  G.aiOyDeneme++;document.getElementById('ap2-den').textContent=G.aiOyDeneme+' '+t('triesLabel2');
+  const ekran=document.getElementById('ap2-ekran');ekran.textContent='????';
+  setTimeout(()=>{
+    ekran.textContent=tahminVal;document.getElementById('ai-dusunuyor').style.display='none';
+    gecmiseEkle('ap2-gec',tahminVal,G.aiSayim);
+    const{dogru,yanlis}=hesapla(tahminVal,G.aiSayim);G.aiP2History.push({tahmin:tahminVal,dogru,yanlis});
+    G.aiAday=G.aiAday.filter(a=>{const r=hesapla(tahminVal,a);return r.dogru===dogru&&r.yanlis===yanlis;});
+    if(dogru===4){
+      G.aiBitti=true;timerDurdur();
+      const sure=timerSuresiAl();
+      istatistikGuncelle(false,G.p1AiDeneme,timerSaniye,'ai');
+      istatistikCoinEkle(sessionCoinsEarned,sessionCoinsSpent);
+      document.getElementById('kaz-title').textContent=t('aiWon');document.getElementById('kaz-title').style.color='var(--ai-color)';
+      document.getElementById('kaz-sub').textContent=G.aiOyDeneme+' '+t('triesIn')+' '+G.aiSayim+' '+t('found');
+      const sureEl=document.getElementById('kaz-sure');if(timerAyar){sureEl.textContent=t('timeLabel')+' '+sure;sureEl.style.display='block';}else sureEl.style.display='none';
+      hazirlaKazandiAi('ai');
+      // Gizli sayıları göster
+      kazandiSayilariGoster([
+        {label:'Senin sayın (AI buldu)',sayi:G.aiSayim,renk:'var(--p1-color)'},
+        {label:'AI\'nın sayısı',sayi:G.aiHedef,renk:'var(--ai-color)'}
+      ]);
+      setTimeout(()=>git('kazandi'),500);return;
+    }
+    document.getElementById('ai-mesaj-bar').textContent=t('yourTurn');document.getElementById('ai-mesaj-bar').style.color='var(--p1-color)';
+    document.getElementById('ap1-pad').querySelectorAll('.mkey').forEach(b=>b.classList.remove('off'));
+    setTimeout(()=>{if(ekran.textContent===tahminVal)ekran.textContent='----';},900);
+  },320);
+}
+function aiEnIyiTahmin(){
+  if(G.aiAday.length<=2)return G.aiAday[0];
+  let best=G.aiAday[0],bestMax=Infinity;
+  const kontrol=G.aiAday.length>200?G.aiAday.slice(0,200):G.aiAday;
+  for(const a of kontrol){
+    const g={};
+    for(const d of G.aiAday){const{dogru,yanlis}=hesapla(a,d);const k=dogru+','+yanlis;g[k]=(g[k]||0)+1;}
+    const maxVal=Math.max(...Object.values(g));
+    if(maxVal<bestMax){bestMax=maxVal;best=a;}
+  }
+  return best;
+}
+function hazirlaKazandiAi(kim){
+  const wrap=document.getElementById('kaz-gecmis-wrap');wrap.innerHTML='';
+  const p1=document.createElement('div');p1.className='kaz-gecmis-panel';
+  p1.innerHTML=`<div class="kaz-gecmis-baslik" style="color:var(--p1-color)">${t('you')}</div><div class="kaz-gecmis-liste" id="kz-a1"></div>`;
+  const p2=document.createElement('div');p2.className='kaz-gecmis-panel';
+  p2.innerHTML=`<div class="kaz-gecmis-baslik" style="color:var(--ai-color)">🤖 AI</div><div class="kaz-gecmis-liste" id="kz-a2"></div>`;
+  wrap.appendChild(p1);wrap.appendChild(p2);
+  doldurKazandiListe('kz-a1',G.aiP1History,G.aiHedef);
+  doldurKazandiListe('kz-a2',G.aiP2History,G.aiSayim);
+  const ce=document.getElementById('kaz-coins-earned');
+  document.getElementById('kaz-coins-val').textContent=sessionCoinsEarned;
+  ce.style.display=kim==='sen'?'inline-flex':'none';
+}
+
+/* ================================================================
+   YARDIMCILAR
+   ================================================================ */
+function hesapla(tahminVal,h){let d=0,y=0;for(let i=0;i<4;i++){if(tahminVal[i]===h[i])d++;else if(h.includes(tahminVal[i]))y++;}return{dogru:d,yanlis:y};}
+function gecmiseEkle(id,tahminVal,h){
+  const gec=document.getElementById(id);
+  const satir=document.createElement('div');satir.className='gecmis-satir';
+  for(let i=0;i<4;i++){const sp=document.createElement('span');sp.textContent=tahminVal[i]+' ';if(tahminVal[i]===h[i])sp.className='yesil';else if(h.includes(tahminVal[i]))sp.className='sari';else sp.className='gri';satir.appendChild(sp);}
+  const{dogru,yanlis}=hesapla(tahminVal,h);
+  const inf=document.createElement('span');inf.style.cssText='color:#4a4a6a;font-size:16px;';inf.textContent=' '+dogru+'D '+yanlis+'Y';satir.appendChild(inf);
+  gec.insertBefore(satir,gec.firstChild);
+}
+function doldurKazandiListe(id,hist,hedef){
+  const el=document.getElementById(id);if(!el)return;
+  if(!hist||hist.length===0){el.innerHTML='<span style="color:#333">—</span>';return;}
+  hist.forEach(({tahmin,dogru,yanlis})=>{
+    const row=document.createElement('div');row.style.cssText='display:flex;gap:3px;align-items:center;margin-bottom:2px;';
+    for(let i=0;i<4;i++){const sp=document.createElement('span');sp.textContent=tahmin[i];if(tahmin[i]===hedef[i])sp.className='yesil';else if(hedef.includes(tahmin[i]))sp.className='sari';else sp.className='gri';row.appendChild(sp);}
+    const inf=document.createElement('span');inf.style.cssText='color:#4a4a6a;font-size:12px;margin-left:4px;';inf.textContent=dogru+'D '+yanlis+'Y';row.appendChild(inf);el.appendChild(row);
+  });
+}
+function coinWinBonus(){addCoins(5);}
+
+/* ================================================================
+   GLOBALS
+   ================================================================ */
+let M={
+  aktif:false,odaKodu:'',rolum:'',benimSayim:'',rakibinSayim:'',
+  girisim:'',benimDeneme:0,rakipDeneme:0,benimGecmis:[],rakipGecmis:[],
+  bitti:false,odaRef:null,chatRef:null,benimHazir:false,rakipHazir:false
+};
+let G={
+  mod:'',aiZorluk:'',p1:'',p2:'',step:1,sg:'',sira:1,g1:'',g2:'',d1:0,d2:0,
+  bitti:false,p1History:[],p2History:[],aiSayim:'',aiHedef:'',aiAday:[],
+  aiOyGirisi:'',aiOyDeneme:0,p1AiDeneme:0,aiBitti:false,aiP1History:[],aiP2History:[]
+};
+
+/* ================================================================
+   KAZANDI EKRANI — GİZLİ SAYILARI GÖSTER
+   ================================================================ */
+function kazandiSayilariGoster(sayilar){
+  // sayilar: [{label, sayi, renk}, ...]
+  const wrap=document.getElementById('kaz-sayilar-wrap');
+  if(!wrap)return;
+  if(!sayilar||sayilar.length===0){wrap.style.display='none';return;}
+  wrap.style.display='flex';
+  wrap.innerHTML='';
+  sayilar.forEach(({label,sayi,renk})=>{
+    const kart=document.createElement('div');
+    kart.className='kaz-sayi-kart';
+    kart.style.borderColor=renk||'var(--accent-border)';
+    kart.innerHTML=`
+      <div class="kaz-sayi-kart-label">${label}</div>
+      <div class="kaz-sayi-kart-sayi" style="color:${renk||'var(--accent)'}">${sayi}</div>
+      <div class="kaz-sayi-kart-sub">🎯 Gizli Sayı</div>`;
+    wrap.appendChild(kart);
+  });
+}
+
+/* ================================================================
+   TEKRAR / MENÜ
+   ================================================================ */
+function tekrar(){
+  timerDurdur();
+  if(G.mod==='2p'){
+    // Aynı oyuncularla yeniden başlat — sayıları tekrar gir
+    G.p1='';G.p2='';G.step=1;G.sg='';
+    document.getElementById('s-title').textContent=t('p1Enter');
+    document.getElementById('s-ekran').textContent='----';
+    git('oyuncu-setup');
+  }
+  else if(G.mod==='ai'){
+    G.sg='';document.getElementById('ai-ekran').textContent='----';git('zorluk-sec');
+  }
+  else if(G.mod==='multi'){
+    // Multiplayer: aynı oda bağlantısını koruyarak oyunu direkt yeniden başlat
+    _multiYenidenBaslat();
+  }
+}
+
+/* Multiplayer yeniden başlatma — diğer oyuncuyu bekle, ikisi de basınca başla */
+function _multiYenidenBaslat(){
+  if(!M.odaKodu) return;
+  // Lokal state sıfırla (oda bağlantısını koruyarak)
+  M.benimSayim=''; M.rakibinSayim=''; M.aktif=false; M.bitti=false;
+  M.benimDeneme=0; M.rakipDeneme=0; M.benimGecmis=[]; M.rakipGecmis=[];
+  M.girisim=''; M.benimHazir=false; M.rakipHazir=false; M._tekrarGecildi=false;
+  sessionCoinsEarned=0; sessionCoinsSpent=0;
+  if(msCountdownInterval){ clearInterval(msCountdownInterval); msCountdownInterval=null; }
+  msCountdownVal=30;
+
+  // Firebase: durum kontrolü yap
+  if(firebaseOk && db){
+    db.ref('odalar/'+M.odaKodu+'/durum').once('value', snap=>{
+      const dur = snap.val();
+      const guncelleme = {};
+      guncelleme[M.rolum+'/sayi']    = '';
+      guncelleme[M.rolum+'/hazir']   = false;
+      guncelleme[M.rolum+'/hamleHazir'] = false;
+      guncelleme[M.rolum+'/hamle']   = null;
+      if(dur === 'tekrar_bekle'){
+        // Rakip zaten bekliyordu → ikisi de hazır
+        guncelleme['durum'] = 'tekrar_hazir';
+      } else {
+        // Biz ilk bastık → bekleme modu
+        guncelleme['durum'] = 'tekrar_bekle';
+        guncelleme['kazanan'] = null;
+      }
+      db.ref('odalar/'+M.odaKodu).update(guncelleme);
+    });
+  }
+
+  // Kazandı ekranında bekleme mesajı göster
+  const kTitle = document.getElementById('kaz-title');
+  const kSub   = document.getElementById('kaz-sub');
+  const kBtns  = document.querySelector('.kaz-btns');
+  if(kTitle) kTitle.textContent = '⏳ Diğer oyuncu bekleniyor...';
+  if(kSub)   kSub.textContent   = 'Rakibinin "Yeniden Oyna" demesi bekleniyor';
+  if(kBtns)  kBtns.style.display = 'none';
+}
+
+function _tekrarSayiGirisineGec(){
+  if(M._tekrarGecildi) return;
+  M._tekrarGecildi = true;
+
+  // Kazandı butonlarını geri getir (bir sonraki oyun için)
+  const kBtns = document.querySelector('.kaz-btns');
+  if(kBtns){ kBtns.style.display=''; kBtns.style.visibility=''; }
+
+  // Multi-setup sıfırla
+  const msBekleme   = document.getElementById('ms-bekleme');    if(msBekleme)   msBekleme.style.display='none';
+  const msInputWrap = document.getElementById('ms-input-wrap'); if(msInputWrap) msInputWrap.style.display='flex';
+  const msEkran     = document.getElementById('ms-ekran');      if(msEkran)     msEkran.textContent='----';
+  const msCdWrap    = document.getElementById('ms-countdown-wrap'); if(msCdWrap) msCdWrap.style.display='none';
+  const msHazirBtn  = document.getElementById('ms-hazir-btn');
+  if(msHazirBtn){ msHazirBtn.disabled=false; msHazirBtn.textContent='✅ Hazırım'; }
+  msSG='';
+
+  // Firebase: kendi alanımı sıfırla, durumu 'bekliyor'a çek
+  if(M.odaKodu && firebaseOk && db){
+    const g={durum:'yeniden_hazir'};
+    g[M.rolum+'/sayi']=''; g[M.rolum+'/hazir']=false;
+    g[M.rolum+'/hamleHazir']=false; g[M.rolum+'/hamle']=null;
+    db.ref('odalar/'+M.odaKodu).update(g);
+  }
+
+  git('multi-setup');
+  // Flag'i kısa süre sonra serbest bırak (listener tekrar tetiklenirse engelle)
+  setTimeout(()=>{ M._tekrarGecildi=false; }, 3000);
+}
+
+/* ================================================================
+   ODA İPTAL
+   ================================================================ */
+function odaIptal(){
+  if(M.odaKodu && firebaseOk && db){
+    db.ref('odalar/'+M.odaKodu).remove().catch(()=>{});
+  }
+  sessionStorage.removeItem('ng9_session');
+  M.odaKodu=''; M.rolum='';
+  const kurBtn=document.getElementById('oda-kur-btn'); if(kurBtn) kurBtn.disabled=false;
+  document.getElementById('oda-kodu-display').textContent='------';
+  document.getElementById('oda-kur-hazir').style.display='none';
+  document.getElementById('oda-kur-durum').textContent=t('roomCreatePrompt');
+  document.getElementById('oda-kur-durum').className='oda-durum bekliyor';
+  if(M.odaRef)try{M.odaRef.off();}catch(e){}
+  M.odaRef=null;
+}
+
+/* ================================================================
+   INIT
+   ================================================================ */
+function dcKopyala(){
+  const txt=document.getElementById('dc-kullanici').textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>gosterPopup('💬','Kopyalandı!','Discord kullanıcı adı kopyalandı: '+txt,'#44aaff'));}
+  else{gosterPopup('💬','Discord',txt,'#44aaff');}
+}
+
+/* ================================================================
+   OTURUM KAYDET / GERİ YÜKLE
+   ================================================================ */
+function oturumKaydet(){
+  if(!M.odaKodu) return;
+  try{
+    sessionStorage.setItem('ng9_session', JSON.stringify({
+      odaKodu:M.odaKodu, rolum:M.rolum,
+      benimSayim:M.benimSayim, aktif:M.aktif
+    }));
+  }catch(e){}
+}
+
+function oturumYukle(cb){
+  try{
+    const raw = sessionStorage.getItem('ng9_session');
+    if(!raw){ cb(false); return; }
+    const s = JSON.parse(raw);
+    if(!s.odaKodu || !firebaseOk || !db){ cb(false); return; }
+    db.ref('odalar/'+s.odaKodu).once('value', snap=>{
+      const oda = snap.val();
+      sessionStorage.removeItem('ng9_session');
+      if(!oda){ cb(false); return; }
+      M.odaKodu = s.odaKodu;
+      M.rolum   = s.rolum;
+      G.mod     = 'multi';
+      if(s.rolum==='kurucu') _kurucuDinleVeDevam(oda, s);
+      else                   _katildiDinleVeDevam(oda, s);
+      cb(true);
+    });
+  }catch(e){ cb(false); }
+}
+
+function _multiOrtakListener(oda, rakipAlan, benimAlan){
+  if(M.aktif && !M.bitti){
+    if(rakipAlan&&rakipAlan.hamle&&rakipAlan.hamle.sira>M.rakipDeneme)
+      multiRakipHamleGoster(rakipAlan.hamle);
+    if(oda.kazanan&&!M.bitti) multiOyunBitti(oda.kazanan);
+  }
+  if(oda.durum==='tekrar_hazir' && !M._tekrarGecildi){
+    _tekrarSayiGirisineGec();
+  }
+  if(!M.aktif && M.benimSayim && M.rakibinSayim){
+    if(rakipAlan&&rakipAlan.hamleHazir) M.rakipHazir=true;
+    if(benimAlan&&benimAlan.hamleHazir&&rakipAlan&&rakipAlan.hamleHazir) _baslat();
+  }
+  if(!M.aktif && M.benimSayim && !M.rakibinSayim){
+    if(rakipAlan&&rakipAlan.sayi) M.rakibinSayim=rakipAlan.sayi;
+  }
+}
+
+function _kurucuDinleVeDevam(odaSnap, s){
+  M.odaRef = fbDinle('odalar/'+M.odaKodu,(oda)=>{
+    if(!oda) return;
+    if(!M.aktif&&!M.benimSayim&&(oda.durum==='katildi'||(oda.katilan&&oda.katilan.sayi))){
+      if(oda.katilan&&oda.katilan.sayi&&!M.rakibinSayim) M.rakibinSayim=oda.katilan.sayi;
+      setTimeout(()=>multiSayiGirisineGec(),600);
+    }
+    _multiOrtakListener(oda, oda.katilan, oda.kurucu);
+  });
+  if(s.aktif&&s.benimSayim){
+    M.aktif=true; M.benimSayim=s.benimSayim;
+    if(odaSnap.katilan&&odaSnap.katilan.sayi) M.rakibinSayim=odaSnap.katilan.sayi;
+    git('multi-oyun');
+    setTimeout(()=>{timerBaslat('timer-bar-multi');chatBaslat();},400);
+  } else if(s.benimSayim){
+    M.benimSayim=s.benimSayim;
+    if(odaSnap.katilan&&odaSnap.katilan.sayi) M.rakibinSayim=odaSnap.katilan.sayi;
+    git('multi-setup');
+  } else {
+    git('multiplayer');
+  }
+}
+
+function _katildiDinleVeDevam(odaSnap, s){
+  M.odaRef = fbDinle('odalar/'+M.odaKodu,(o)=>{
+    if(!o) return;
+    _multiOrtakListener(o, o.kurucu, o.katilan);
+  });
+  if(s.aktif&&s.benimSayim){
+    M.aktif=true; M.benimSayim=s.benimSayim;
+    if(odaSnap.kurucu&&odaSnap.kurucu.sayi) M.rakibinSayim=odaSnap.kurucu.sayi;
+    git('multi-oyun');
+    setTimeout(()=>{timerBaslat('timer-bar-multi');chatBaslat();},400);
+  } else if(s.benimSayim){
+    M.benimSayim=s.benimSayim;
+    if(odaSnap.kurucu&&odaSnap.kurucu.sayi) M.rakibinSayim=odaSnap.kurucu.sayi;
+    git('multi-setup');
+  } else {
+    git('multiplayer');
+  }
+}
+
+/* ================================================================
+   INIT
+   ================================================================ */
+// iOS fix: event delegation ile tüm buton tıklamaları güvenli
+document.addEventListener('touchstart', function(){}, {passive:true});
+
+// Numpad tuş delegasyonu — iOS'ta inline onclick yerine daha güvenilir
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const oc = btn.getAttribute('onclick');
+  if(!oc) return; // addEventListener ile bağlı, zaten çalışır
+  // inline onclick zaten tarayıcı tarafından çalıştırılır, extra işlem yok
+}, {passive:false});
+
+// iOS'ta butonlara dokunulduğunda aktif feedback ver
+document.addEventListener('touchstart', function(e){
+  const btn = e.target.closest('button');
+  if(btn && !btn.disabled) btn.style.opacity='0.7';
+}, {passive:true});
+document.addEventListener('touchend', function(e){
+  const btn = e.target.closest('button');
+  if(btn) setTimeout(()=>btn.style.opacity='', 150);
+}, {passive:true});
+
+window.addEventListener('load',()=>{
+  // iOS güvenlik ağı: 2 saniye sonra hâlâ ekran yoksa ana menüyü zorla aç
+  setTimeout(()=>{
+    if(!document.querySelector('.screen.active')) git('ana-menu');
+  }, 2000);
+
+  // iOS Safari fix: tüm butonlara touchend→click köprüsü kur
+  document.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('touchend', function(e){
+      e.preventDefault();
+      this.click();
+    }, {passive:false});
+  });
+
+  initFirebase();loadLang();loadCoins();loadTimerAyar();loadPerf();
+  applyAllMarketItems();updateIndirilenlerBadge();tumMetinleriGuncelle();
+  const setVH=()=>{
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', vh+'px');
+  };
+  setVH();
+  window.addEventListener('resize', setVH);
+  window.addEventListener('orientationchange', ()=>setTimeout(setVH,300));
+  try{
+    oturumYukle((restored)=>{ if(!restored) git('ana-menu'); });
+  }catch(e){ git('ana-menu'); }
+});
+
+</script>
+</body>
+</html>
